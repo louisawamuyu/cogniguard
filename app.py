@@ -340,7 +340,7 @@ with st.sidebar:
             "--- SECURITY DEMOS ---",
             "🎯 Prompt Injection Demo",
             "🤖 AI Agent Security",
-            "📋 The Cost of Inaction",
+            "💸 The Cost of Inaction",
             "⚖️ Liability Calculator",
             "🔓 Data Exfiltration Demo",
             "🏢 Enterprise Sales",
