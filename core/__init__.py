@@ -2,6 +2,7 @@
 CogniGuard Core Module
 """
 
+# Import with error handling
 try:
     from .detection_engine import CogniGuardEngine, ThreatLevel, DetectionResult
 except ImportError:
@@ -16,11 +17,19 @@ except ImportError:
     PerturbationType = None
     NoiseBudget = None
 
+try:
+    from .integrated_analyzer import IntegratedAnalyzer, OverallRiskLevel
+except ImportError:
+    IntegratedAnalyzer = None
+    OverallRiskLevel = None
+
 __all__ = [
-    'CogniGuardEngine', 
-    'ThreatLevel', 
+    'CogniGuardEngine',
+    'ThreatLevel',
     'DetectionResult',
     'ClaimAnalyzer',
     'PerturbationType',
     'NoiseBudget',
+    'IntegratedAnalyzer',
+    'OverallRiskLevel',
 ]
