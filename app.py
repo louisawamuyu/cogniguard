@@ -2924,7 +2924,7 @@ elif page == "🤖 AI Agent Security":
 # NEW PAGE: THE COST OF INACTION (FIXED CLEAN VERSION)
 # ============================================================================
 
-elif page == "📋 Compliance Check":
+elif page == "💸 The Cost of Inaction":
     st.markdown('<h1 class="main-header">💸 The Cost of Inaction</h1>', unsafe_allow_html=True)
     
     st.markdown("### What Happens When AI Security Fails")
