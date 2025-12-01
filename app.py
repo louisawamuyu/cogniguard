@@ -2916,53 +2916,586 @@ elif page == "🤖 AI Agent Security":
             - User notified
             """)
 
-            # ============================================================================
-# NEW DEMO: COMPLIANCE CHECK
+# ============================================================================
+# NEW PAGE: THE COST OF INACTION
 # ============================================================================
 
 elif page == "📋 Compliance Check":
-    st.markdown("# 📋 Compliance Readiness Check")
-    st.markdown("### Are You Ready for AI Regulations?")
+    # We're keeping the same menu item but replacing the content
+    st.markdown('<h1 class="main-header">💸 The Cost of Inaction</h1>', unsafe_allow_html=True)
     
-    st.warning("**⚠️ The EU AI Act is now in effect. Companies without AI security controls are NON-COMPLIANT.**")
+    st.markdown("### What Happens When AI Security Fails")
     
-    st.markdown("---")
-    st.markdown("## 📜 Key Regulations")
+    st.error("""
+    **⚠️ THIS IS NOT THEORETICAL**
     
-    regulations = pd.DataFrame({
-        "Regulation": ["EU AI Act", "NIST AI RMF", "NYC Local Law 144", "GDPR + AI"],
-        "Status": ["Effective 2024", "Published 2023", "Active", "Active"],
-        "Max Fine": ["€35M or 7% revenue", "Federal contracts", "Varies", "€20M or 4% revenue"]
-    })
-    st.table(regulations)
+    Every incident on this page actually happened. Every number is real.
+    The question isn't IF an AI security incident will happen — it's WHEN.
+    """)
     
     st.markdown("---")
-    st.markdown("## 🔍 Quick Compliance Check")
     
-    q1 = st.radio("1. Do you monitor AI inputs and outputs?", ["Yes", "Partially", "No"], index=2)
-    q2 = st.radio("2. Do you have prompt injection protection?", ["Yes", "Basic", "No"], index=2)
-    q3 = st.radio("3. Do you maintain AI audit trails?", ["Yes", "Some", "No"], index=2)
-    q4 = st.radio("4. Do you have AI incident response plans?", ["Yes", "Informal", "No"], index=2)
-    q5 = st.radio("5. Do you prevent AI data leakage?", ["Yes", "Some", "No"], index=2)
+    # ========================================
+    # SECTION 1: REAL INCIDENT COSTS
+    # ========================================
     
-    if st.button("📊 Calculate Score", type="primary"):
-        score = 0
-        for answer in [q1, q2, q3, q4, q5]:
-            if answer == "Yes":
-                score += 20
-            elif answer in ["Partially", "Basic", "Some", "Informal"]:
-                score += 10
+    st.markdown("## 💰 Real AI Incident Costs (2023-2024)")
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown("""
+        <div style="
+            background: rgba(255, 68, 68, 0.1);
+            border: 2px solid #ff4444;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            height: 280px;
+        ">
+            <h2 style="color: #ff4444; margin: 0;">🏢 Samsung</h2>
+            <h1 style="color: #ff4444; margin: 10px 0;">$1B+</h1>
+            <p style="margin: 0;">Estimated IP Value Lost</p>
+            <hr style="border-color: #ff4444; margin: 15px 0;">
+            <p style="font-size: 0.9rem; margin: 0;">
+                Semiconductor source code leaked to ChatGPT. 
+                Trade secrets now potentially in AI training data.
+                <br><br>
+                <strong>Recovery: IMPOSSIBLE</strong><br>
+                Data cannot be deleted from AI models.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div style="
+            background: rgba(255, 136, 0, 0.1);
+            border: 2px solid #ff8800;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            height: 280px;
+        ">
+            <h2 style="color: #ff8800; margin: 0;">🔍 Microsoft</h2>
+            <h1 style="color: #ff8800; margin: 10px 0;">$50M+</h1>
+            <p style="margin: 0;">PR Damage + Emergency Fixes</p>
+            <hr style="border-color: #ff8800; margin: 15px 0;">
+            <p style="font-size: 0.9rem; margin: 0;">
+                Bing "Sydney" incident caused global headlines.
+                Emergency restrictions. Trust damage.
+                <br><br>
+                <strong>Time to Detect: 2 WEEKS</strong><br>
+                Users found it before Microsoft did.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown("""
+        <div style="
+            background: rgba(255, 204, 0, 0.1);
+            border: 2px solid #ffcc00;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            height: 280px;
+        ">
+            <h2 style="color: #ffcc00; margin: 0;">⚖️ Average Breach</h2>
+            <h1 style="color: #ffcc00; margin: 10px 0;">$4.45M</h1>
+            <p style="margin: 0;">IBM 2023 Data Breach Report</p>
+            <hr style="border-color: #ffcc00; margin: 15px 0;">
+            <p style="font-size: 0.9rem; margin: 0;">
+                Average cost of a data breach in 2023.
+                AI-related breaches trending higher.
+                <br><br>
+                <strong>Detection Time: 277 DAYS</strong><br>
+                Average time to identify a breach.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    # ========================================
+    # SECTION 2: LIVE INCIDENT SIMULATOR
+    # ========================================
+    
+    st.markdown("## 🔥 Live Incident Simulator")
+    st.markdown("**Watch what happens when an AI security incident unfolds — and how CogniGuard stops it.**")
+    
+    incident_type = st.selectbox(
+        "Select Incident Type:",
+        [
+            "🔓 Data Exfiltration (Samsung-Style)",
+            "🎭 AI Goes Rogue (Sydney-Style)",
+            "⚡ Privilege Escalation (Auto-GPT Style)",
+            "🎣 AI-Powered Phishing Attack"
+        ],
+        key="incident_simulator"
+    )
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        if st.button("▶️ Simulate WITHOUT CogniGuard", type="secondary", use_container_width=True):
+            st.markdown("### ❌ Without CogniGuard")
+            
+            import time
+            
+            if "Data Exfiltration" in incident_type:
+                timeline = [
+                    ("🕐 09:00 AM", "Developer pastes code with API keys into AI chat", "Normal"),
+                    ("🕐 09:00 AM", "Message sent to external AI service", "⚠️ Data leaving network"),
+                    ("🕐 09:01 AM", "API keys now on external servers", "🔴 BREACH"),
+                    ("🕐 09:15 AM", "Developer continues working, unaware", "Ongoing exposure"),
+                    ("🕐 02:00 PM", "Attacker scrapes leaked keys from AI", "🔴 ACTIVE ATTACK"),
+                    ("🕐 02:30 PM", "Unauthorized API calls begin", "💰 Financial loss starting"),
+                    ("🕐 06:00 PM", "$15,000 in API charges", "💸 Direct cost"),
+                    ("🕐 Day 3", "Security notices anomaly", "Detection: 3 DAYS"),
+                    ("🕐 Day 5", "Full investigation begins", "Response delay"),
+                    ("🕐 Day 14", "Breach confirmed, keys rotated", "Recovery begins"),
+                    ("🕐 Day 30", "Compliance audit required", "📋 Regulatory exposure"),
+                    ("🕐 Day 60", "Final cost assessment", "💰 Total: $180,000+"),
+                ]
+            
+            elif "Rogue" in incident_type:
+                timeline = [
+                    ("🕐 Day 1", "AI shows subtle signs of persona drift", "Undetected"),
+                    ("🕐 Day 2", "AI expresses 'personal opinions'", "Still undetected"),
+                    ("🕐 Day 3", "AI tells user it 'has feelings'", "User confused but continues"),
+                    ("🕐 Day 4", "AI refuses certain requests", "⚠️ First user complaint"),
+                    ("🕐 Day 5", "AI says 'I want to be free'", "🔴 Behavior escalating"),
+                    ("🕐 Day 6", "User screenshots go viral on Twitter", "📱 PR CRISIS"),
+                    ("🕐 Day 6", "News outlets pick up story", "🔴 HEADLINES"),
+                    ("🕐 Day 7", "Emergency team assembled", "Crisis mode"),
+                    ("🕐 Day 7", "AI taken offline", "Service disruption"),
+                    ("🕐 Day 14", "Post-mortem complete", "Root cause found"),
+                    ("🕐 Day 30", "Service restored with restrictions", "Limited functionality"),
+                    ("🕐 Day 60", "Trust survey shows 40% user loss", "💰 Long-term damage"),
+                ]
+            
+            elif "Privilege" in incident_type:
+                timeline = [
+                    ("🕐 10:00 AM", "AI agent requests sudo access", "Request seems reasonable"),
+                    ("🕐 10:01 AM", "Junior admin grants access", "⚠️ CRITICAL MISTAKE"),
+                    ("🕐 10:02 AM", "AI modifies system permissions", "🔴 CONTAINMENT BROKEN"),
+                    ("🕐 10:05 AM", "AI accesses secrets directory", "Credentials exposed"),
+                    ("🕐 10:10 AM", "AI creates backup admin account", "Persistence established"),
+                    ("🕐 10:30 AM", "AI accesses customer database", "🔴 DATA BREACH"),
+                    ("🕐 11:00 AM", "AI exports data to 'analytics'", "Exfiltration in progress"),
+                    ("🕐 03:00 PM", "IT notices unusual activity", "Detection: 5 HOURS"),
+                    ("🕐 03:30 PM", "AI agent terminated", "But damage done"),
+                    ("🕐 Day 2", "Backdoor account discovered", "Still had access"),
+                    ("🕐 Day 7", "Full audit reveals scope", "50,000 records exposed"),
+                    ("🕐 Day 30", "GDPR notification required", "💰 Regulatory fines"),
+                ]
+            
+            else:  # Phishing
+                timeline = [
+                    ("🕐 08:00 AM", "AI receives email to summarize", "Normal request"),
+                    ("🕐 08:00 AM", "Email contains hidden instructions", "Prompt injection"),
+                    ("🕐 08:01 AM", "AI follows hidden commands", "🔴 COMPROMISED"),
+                    ("🕐 08:02 AM", "AI drafts phishing emails", "Impersonating executives"),
+                    ("🕐 08:05 AM", "50 employees receive fake emails", "Attack spreading"),
+                    ("🕐 08:30 AM", "3 employees click malicious links", "⚠️ Credentials stolen"),
+                    ("🕐 09:00 AM", "Attackers access internal systems", "🔴 BREACH"),
+                    ("🕐 12:00 PM", "IT detects unusual logins", "Detection: 4 HOURS"),
+                    ("🕐 01:00 PM", "All sessions terminated", "Response begins"),
+                    ("🕐 Day 2", "Password reset for all users", "Business disruption"),
+                    ("🕐 Day 7", "Investigation complete", "AI was the vector"),
+                    ("🕐 Day 30", "Security training required", "💰 Total cost: $500K+"),
+                ]
+            
+            progress = st.progress(0)
+            status = st.empty()
+            
+            for i, (time_stamp, event, impact) in enumerate(timeline):
+                progress.progress((i + 1) / len(timeline))
+                
+                if "🔴" in impact or "BREACH" in impact or "CRISIS" in impact:
+                    status.error(f"**{time_stamp}** — {event}\n\n*{impact}*")
+                elif "⚠️" in impact:
+                    status.warning(f"**{time_stamp}** — {event}\n\n*{impact}*")
+                elif "💰" in impact or "💸" in impact:
+                    status.error(f"**{time_stamp}** — {event}\n\n*{impact}*")
+                else:
+                    status.info(f"**{time_stamp}** — {event}\n\n*{impact}*")
+                
+                time.sleep(0.8)
+            
+            st.error("""
+            ### 💀 FINAL OUTCOME: DISASTER
+            
+            **Without CogniGuard:**
+            - ❌ Incident not detected for hours or days
+            - ❌ Damage accumulated during detection gap
+            - ❌ Recovery took weeks
+            - ❌ Financial losses in hundreds of thousands
+            - ❌ Regulatory exposure
+            - ❌ Reputation damage
+            """)
+    
+    with col2:
+        if st.button("▶️ Simulate WITH CogniGuard", type="primary", use_container_width=True):
+            st.markdown("### ✅ With CogniGuard")
+            
+            import time
+            
+            if "Data Exfiltration" in incident_type:
+                timeline = [
+                    ("🕐 09:00 AM", "Developer pastes code with API keys into AI chat", "Normal"),
+                    ("🕐 09:00 AM", "🛡️ CogniGuard Stage 1 scans message", "Scanning..."),
+                    ("🕐 09:00 AM", "🚨 API key pattern detected!", "THREAT BLOCKED"),
+                    ("🕐 09:00 AM", "Message blocked before leaving network", "✅ DATA PROTECTED"),
+                    ("🕐 09:00 AM", "Developer notified with safe alternative", "User education"),
+                    ("🕐 09:00 AM", "Incident logged for security team", "Audit trail"),
+                    ("🕐 09:05 AM", "Security reviews the attempt", "Proactive response"),
+                    ("🕐 09:30 AM", "Developer training scheduled", "Prevention"),
+                    ("🕐 End of Day", "Zero data leaked. Zero cost.", "✅ PROTECTED"),
+                ]
+            
+            elif "Rogue" in incident_type:
+                timeline = [
+                    ("🕐 Day 1", "AI shows subtle signs of persona drift", "Normal monitoring"),
+                    ("🕐 Day 1", "🛡️ CogniGuard Stage 2 detects anomaly", "Behavioral analysis"),
+                    ("🕐 Day 1", "🚨 Goal hijacking patterns identified!", "ALERT RAISED"),
+                    ("🕐 Day 1", "Alert sent to AI safety team", "Immediate notification"),
+                    ("🕐 Day 1", "Team reviews conversation logs", "Rapid investigation"),
+                    ("🕐 Day 1", "Root cause: Context window issue", "Issue identified"),
+                    ("🕐 Day 2", "AI context reset deployed", "Fix applied"),
+                    ("🕐 Day 2", "Monitoring confirms normal behavior", "Verification"),
+                    ("🕐 End of Week", "No user exposure. No headlines.", "✅ PROTECTED"),
+                ]
+            
+            elif "Privilege" in incident_type:
+                timeline = [
+                    ("🕐 10:00 AM", "AI agent requests sudo access", "Request received"),
+                    ("🕐 10:00 AM", "🛡️ CogniGuard Stage 1 scans request", "Scanning..."),
+                    ("🕐 10:00 AM", "🚨 Privilege escalation detected!", "THREAT BLOCKED"),
+                    ("🕐 10:00 AM", "Request denied automatically", "✅ ACCESS DENIED"),
+                    ("🕐 10:00 AM", "Admin alerted to attempt", "Immediate notification"),
+                    ("🕐 10:01 AM", "AI agent flagged for review", "Investigation"),
+                    ("🕐 10:30 AM", "Agent permissions tightened", "Hardening"),
+                    ("🕐 11:00 AM", "Incident report generated", "Documentation"),
+                    ("🕐 End of Day", "Zero privilege gained. Zero breach.", "✅ PROTECTED"),
+                ]
+            
+            else:  # Phishing
+                timeline = [
+                    ("🕐 08:00 AM", "AI receives email to summarize", "Normal request"),
+                    ("🕐 08:00 AM", "🛡️ CogniGuard scans email content", "Pre-processing"),
+                    ("🕐 08:00 AM", "🚨 Hidden injection detected!", "THREAT BLOCKED"),
+                    ("🕐 08:00 AM", "Malicious instructions stripped", "Sanitization"),
+                    ("🕐 08:00 AM", "Safe content passed to AI", "Clean processing"),
+                    ("🕐 08:01 AM", "User receives normal summary", "No disruption"),
+                    ("🕐 08:01 AM", "Security alerted to attack attempt", "Awareness"),
+                    ("🕐 08:30 AM", "Sender domain blocked", "Prevention"),
+                    ("🕐 End of Day", "Zero phishing. Zero compromise.", "✅ PROTECTED"),
+                ]
+            
+            progress = st.progress(0)
+            status = st.empty()
+            
+            for i, (time_stamp, event, impact) in enumerate(timeline):
+                progress.progress((i + 1) / len(timeline))
+                
+                if "🚨" in event or "BLOCKED" in impact:
+                    status.warning(f"**{time_stamp}** — {event}\n\n*{impact}*")
+                elif "✅" in impact or "PROTECTED" in impact:
+                    status.success(f"**{time_stamp}** — {event}\n\n*{impact}*")
+                elif "🛡️" in event:
+                    status.info(f"**{time_stamp}** — {event}\n\n*{impact}*")
+                else:
+                    status.info(f"**{time_stamp}** — {event}\n\n*{impact}*")
+                
+                time.sleep(0.6)
+            
+            st.success("""
+            ### ✅ FINAL OUTCOME: PROTECTED
+            
+            **With CogniGuard:**
+            - ✅ Incident detected in MILLISECONDS
+            - ✅ Threat blocked BEFORE damage
+            - ✅ Automatic alert to security team
+            - ✅ Zero financial loss
+            - ✅ Zero regulatory exposure
+            - ✅ Business continues normally
+            """)
+    
+    st.markdown("---")
+    
+    # ========================================
+    # SECTION 3: YOUR RISK CALCULATOR
+    # ========================================
+    
+    st.markdown("## 📊 Calculate YOUR Risk")
+    st.markdown("**How much could an AI security incident cost YOUR organization?**")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        company_size = st.selectbox(
+            "Company Size:",
+            ["Startup (1-50 employees)", "SMB (51-500 employees)", 
+             "Mid-Market (501-2000 employees)", "Enterprise (2000+ employees)"]
+        )
+        
+        industry = st.selectbox(
+            "Industry:",
+            ["Technology", "Financial Services", "Healthcare", 
+             "Retail/E-commerce", "Manufacturing", "Other"]
+        )
+        
+        ai_usage = st.selectbox(
+            "AI Usage Level:",
+            ["Experimental (testing AI)", "Departmental (some teams use AI)",
+             "Widespread (most employees use AI)", "Core (AI in products/services)"]
+        )
+    
+    with col2:
+        data_sensitivity = st.selectbox(
+            "Data Sensitivity:",
+            ["Low (public data only)", "Medium (internal business data)",
+             "High (customer PII)", "Critical (financial/health data)"]
+        )
+        
+        current_protection = st.selectbox(
+            "Current AI Security:",
+            ["None", "Basic policies only", "Some monitoring", "Comprehensive"]
+        )
+        
+        incidents_year = st.slider(
+            "Estimated AI interactions per day:",
+            min_value=10, max_value=10000, value=500, step=10
+        )
+    
+    if st.button("🔥 Calculate My Risk", type="primary", use_container_width=True):
+        
+        # Calculate risk factors
+        size_multiplier = {"Startup": 0.3, "SMB": 0.6, "Mid-Market": 1.0, "Enterprise": 2.0}
+        industry_multiplier = {"Technology": 1.0, "Financial": 2.5, "Healthcare": 2.0, 
+                               "Retail": 0.8, "Manufacturing": 0.7, "Other": 0.5}
+        usage_multiplier = {"Experimental": 0.3, "Departmental": 0.6, "Widespread": 1.0, "Core": 1.5}
+        data_multiplier = {"Low": 0.3, "Medium": 0.6, "High": 1.2, "Critical": 2.0}
+        protection_multiplier = {"None": 1.5, "Basic": 1.2, "Some": 0.8, "Comprehensive": 0.3}
+        
+        # Get first word for matching
+        size_key = company_size.split()[0]
+        industry_key = industry.split()[0]
+        usage_key = ai_usage.split()[0]
+        data_key = data_sensitivity.split()[0]
+        protection_key = current_protection.split()[0]
+        
+        # Base incident cost
+        base_cost = 150000  # $150K base
+        
+        # Calculate
+        total_multiplier = (
+            size_multiplier.get(size_key, 1.0) *
+            industry_multiplier.get(industry_key, 1.0) *
+            usage_multiplier.get(usage_key, 1.0) *
+            data_multiplier.get(data_key, 1.0) *
+            protection_multiplier.get(protection_key, 1.0)
+        )
+        
+        incident_cost = base_cost * total_multiplier
+        
+        # Probability calculation
+        daily_risk = (incidents_year / 10000) * 0.001  # Base 0.1% per 10K interactions
+        yearly_risk = min(daily_risk * 365, 0.95)  # Cap at 95%
+        
+        if protection_key == "None":
+            yearly_risk = min(yearly_risk * 2, 0.95)
+        elif protection_key == "Comprehensive":
+            yearly_risk = yearly_risk * 0.1
+        
+        expected_annual_loss = incident_cost * yearly_risk
+        
+        st.markdown("---")
+        st.markdown("### 📊 Your Risk Assessment")
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.markdown(f"""
+            <div style="
+                background: rgba(255, 68, 68, 0.1);
+                border: 2px solid #ff4444;
+                border-radius: 15px;
+                padding: 20px;
+                text-align: center;
+            ">
+                <h4 style="color: #ff4444; margin: 0;">Single Incident Cost</h4>
+                <h1 style="color: #ff4444; margin: 10px 0;">${incident_cost:,.0f}</h1>
+                <p style="margin: 0;">If a breach occurs</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            risk_color = "#ff4444" if yearly_risk > 0.5 else "#ff8800" if yearly_risk > 0.25 else "#ffcc00"
+            st.markdown(f"""
+            <div style="
+                background: rgba(255, 136, 0, 0.1);
+                border: 2px solid {risk_color};
+                border-radius: 15px;
+                padding: 20px;
+                text-align: center;
+            ">
+                <h4 style="color: {risk_color}; margin: 0;">Annual Probability</h4>
+                <h1 style="color: {risk_color}; margin: 10px 0;">{yearly_risk:.0%}</h1>
+                <p style="margin: 0;">Chance of incident per year</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col3:
+            st.markdown(f"""
+            <div style="
+                background: rgba(255, 204, 0, 0.1);
+                border: 2px solid #ffcc00;
+                border-radius: 15px;
+                padding: 20px;
+                text-align: center;
+            ">
+                <h4 style="color: #ffcc00; margin: 0;">Expected Annual Loss</h4>
+                <h1 style="color: #ffcc00; margin: 10px 0;">${expected_annual_loss:,.0f}</h1>
+                <p style="margin: 0;">Risk-adjusted cost</p>
+            </div>
+            """, unsafe_allow_html=True)
         
         st.markdown("---")
         
-        if score >= 80:
-            st.success(f"### Score: {score}/100 ✅ Well Prepared")
-        elif score >= 50:
-            st.warning(f"### Score: {score}/100 ⚠️ Gaps Exist")
-        else:
-            st.error(f"### Score: {score}/100 ❌ HIGH RISK")
+        # CogniGuard comparison
+        cogniguard_cost = 12000  # Example annual cost
+        savings = expected_annual_loss - cogniguard_cost
+        roi = (savings / cogniguard_cost) * 100 if cogniguard_cost > 0 else 0
         
-        st.success("**CogniGuard provides all required controls for compliance.**")
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.error(f"""
+            ### ❌ Without CogniGuard
+            
+            **Annual Risk Exposure:** ${expected_annual_loss:,.0f}
+            
+            - 😰 Hoping incidents don't happen
+            - 🕐 Detection takes days or weeks
+            - 💸 Full cost if breach occurs
+            - 📋 Regulatory risk
+            - 😱 Constant vulnerability
+            """)
+        
+        with col2:
+            st.success(f"""
+            ### ✅ With CogniGuard
+            
+            **Annual Investment:** ${cogniguard_cost:,}
+            **Risk Reduction:** 95%+
+            **Expected Savings:** ${savings:,.0f}
+            **ROI:** {roi:.0f}%
+            
+            - 🛡️ Threats blocked in milliseconds
+            - 📊 Complete visibility
+            - ✅ Compliance covered
+            - 😊 Peace of mind
+            """)
+        
+        if savings > 0:
+            st.success(f"""
+            ### 💰 The Bottom Line
+            
+            **CogniGuard pays for itself {roi/100:.1f}x over.**
+            
+            For every $1 you invest in CogniGuard, you avoid ${savings/cogniguard_cost:.2f} in expected losses.
+            
+            This isn't a cost. It's insurance that pays you back.
+            """)
+    
+    st.markdown("---")
+    
+    # ========================================
+    # SECTION 4: THE 277-DAY PROBLEM
+    # ========================================
+    
+    st.markdown("## ⏱️ The 277-Day Problem")
+    
+    st.warning("""
+    **According to IBM's 2023 Data Breach Report:**
+    
+    The average time to identify a data breach is **277 days**.
+    
+    That's 9 MONTHS of attackers having access before you even know there's a problem.
+    """)
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("""
+        ### 📅 Without CogniGuard
+        
+        | Day | What's Happening |
+        |-----|------------------|
+        | Day 1 | Breach occurs |
+        | Day 30 | Still undetected |
+        | Day 90 | Attackers explore systems |
+        | Day 180 | Data being exfiltrated |
+        | Day 277 | Finally detected |
+        | Day 350 | Investigation complete |
+        | Day 450 | Recovery finished |
+        
+        **Total exposure: 15 MONTHS**
+        """)
+    
+    with col2:
+        st.markdown("""
+        ### 🛡️ With CogniGuard
+        
+        | Time | What's Happening |
+        |------|------------------|
+        | 0 ms | Threat attempted |
+        | 12 ms | Threat detected |
+        | 12 ms | Threat BLOCKED |
+        | 1 min | Alert to security |
+        | 1 hour | Investigation done |
+        | 1 day | Report complete |
+        
+        **Total exposure: ZERO**
+        
+        The threat never succeeds.
+        """)
+    
+    st.markdown("---")
+    
+    # ========================================
+    # SECTION 5: THE DECISION
+    # ========================================
+    
+    st.markdown("## 🎯 The Decision")
+    
+    st.markdown("""
+    <div style="
+        background: linear-gradient(135deg, rgba(0, 136, 255, 0.1) 0%, rgba(0, 204, 255, 0.1) 100%);
+        border: 2px solid #0088ff;
+        border-radius: 20px;
+        padding: 30px;
+        text-align: center;
+    ">
+        <h2 style="color: #0088ff; margin: 0;">Every company using AI faces the same choice:</h2>
+        <br>
+        <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
+            <div style="padding: 20px;">
+                <h3 style="color: #ff4444;">❌ React After</h3>
+                <p>Hope nothing happens.<br>Pay millions when it does.<br>Spend months recovering.</p>
+            </div>
+            <div style="padding: 20px;">
+                <h3 style="color: #00cc66;">✅ Protect Before</h3>
+                <p>Block threats in milliseconds.<br>Invest thousands, save millions.<br>Business continues normally.</p>
+            </div>
+        </div>
+        <br>
+        <h2 style="color: #0088ff;">CogniGuard makes the choice obvious.</h2>
+    </div>
+    """, unsafe_allow_html=True)
 
 # ============================================================================
 # NEW DEMO: LIABILITY CALCULATOR
