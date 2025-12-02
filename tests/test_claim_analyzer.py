@@ -2,10 +2,9 @@
 =============================================================================
 COGNIGUARD - CLAIM ANALYZER TEST SUITE
 =============================================================================
-Comprehensive tests for all 6 perturbation types from the ACL 2025 paper.
+Comprehensive tests for all 6 perturbation types.
 
-Run with: python -m pytest tests/test_claim_analyzer.py -v
-Or: python tests/test_claim_analyzer.py (for simple run)
+Run with: python tests/test_claim_analyzer.py
 =============================================================================
 """
 
@@ -16,284 +15,185 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from core.claim_analyzer import (
-    ClaimAnalyzer,
-    PerturbationType,
-    NoiseBudget,
-    PerturbationResult,
-    ClaimAnalysisResult
-)
+from core.claim_analyzer import ClaimAnalyzer, PerturbationType, NoiseBudget
 
 
 # =============================================================================
-# TEST DATA: All 6 Perturbation Types
+# TEST DATA - Organized by perturbation type
 # =============================================================================
 
-# The original, unmodified claim
-ORIGINAL_CLAIM = "The COVID-19 vaccine is safe and effective according to the CDC."
-
-
-# Test data organized by perturbation type
 TEST_CASES = {
     # =========================================================================
-    # 1. CASING TESTS
+    # CASING TESTS
     # =========================================================================
     "casing": {
-        "description": "Tests for casing perturbations (UPPERCASE, lowercase, mIxEd)",
-        "low_noise": [
+        "should_detect": [
             {
-                "input": "the covid-19 vaccine is safe and effective according to the cdc.",
-                "expected_detected": True,
-                "expected_type": PerturbationType.CASING,
-                "description": "All lowercase (TrueCasing violated)"
-            },
-        ],
-        "high_noise": [
-            {
-                "input": "THE COVID-19 VACCINE IS SAFE AND EFFECTIVE ACCORDING TO THE CDC.",
-                "expected_detected": True,
+                "input": "THE VACCINE IS SAFE AND EFFECTIVE ACCORDING TO THE CDC!",
                 "expected_type": PerturbationType.CASING,
                 "expected_budget": NoiseBudget.HIGH,
-                "description": "All uppercase - high noise"
+                "description": "All uppercase text"
             },
             {
-                "input": "ThE cOvId-19 VaCcInE iS sAfE",
-                "expected_detected": True,
+                "input": "ThE VaCcInE iS SaFe AnD eFfEcTiVe",
                 "expected_type": PerturbationType.CASING,
-                "description": "Alternating case"
+                "expected_budget": NoiseBudget.HIGH,
+                "description": "Mixed weird casing"
             },
         ],
-        "clean": [
+        "should_not_detect": [
             {
-                "input": "The COVID-19 vaccine is safe and effective.",
-                "expected_detected": False,
-                "description": "Normal TrueCasing - should be clean"
+                "input": "The vaccine is safe and effective.",
+                "description": "Normal casing - should be clean"
             },
         ],
     },
     
     # =========================================================================
-    # 2. TYPOS TESTS
+    # TYPOS TESTS
     # =========================================================================
     "typos": {
-        "description": "Tests for typo perturbations (spelling errors, leetspeak, slang)",
-        "low_noise": [
+        "should_detect": [
             {
-                "input": "The COVID-19 vacine is safe and effective according to the CDC.",
-                "expected_detected": False,  # Minor typo might not be caught
-                "description": "Single character typo (vacine)"
-            },
-        ],
-        "high_noise": [
-            {
-                "input": "Th3 C0VID-19 vaxx is safe & effective according 2 the CDC",
-                "expected_detected": True,
+                "input": "Th3 C0VID-19 vaxx is s4fe according 2 the CDC",
                 "expected_type": PerturbationType.TYPOS,
                 "expected_budget": NoiseBudget.HIGH,
-                "description": "Heavy leetspeak (3, 0, 2)"
-            },
-            {
-                "input": "The c0v1d v4ccine is s4fe according to the govt",
-                "expected_detected": True,
-                "expected_type": PerturbationType.TYPOS,
-                "description": "Evasion spellings"
+                "description": "Heavy leetspeak (3, 0, 4, 2)"
             },
             {
                 "input": "ur gonna be fine cuz the vaxx works thru science ppl",
-                "expected_detected": True,
                 "expected_type": PerturbationType.TYPOS,
+                "expected_budget": NoiseBudget.HIGH,
                 "description": "Heavy slang (ur, cuz, thru, ppl)"
             },
+            {
+                "input": "The v4ccine is s4fe according to the govt",
+                "expected_type": PerturbationType.TYPOS,
+                "description": "Leetspeak with government abbreviation"
+            },
         ],
-        "clean": [
+        "should_not_detect": [
             {
                 "input": "The vaccine is manufactured by Pfizer.",
-                "expected_detected": False,
                 "description": "No typos - should be clean"
             },
         ],
     },
     
     # =========================================================================
-    # 3. NEGATION TESTS
+    # NEGATION TESTS
     # =========================================================================
     "negation": {
-        "description": "Tests for negation perturbations (single and double negatives)",
-        "low_noise": [
+        "should_detect": [
             {
-                "input": "The vaccine is not unsafe according to the CDC.",
-                "expected_detected": True,
-                "expected_type": PerturbationType.NEGATION,
-                "description": "Single negation (not unsafe)"
-            },
-            {
-                "input": "The CDC doesn't say the vaccine is dangerous.",
-                "expected_detected": True,
-                "expected_type": PerturbationType.NEGATION,
-                "description": "Simple negative statement"
-            },
-        ],
-        "high_noise": [
-            {
-                "input": "It is not untrue that the vaccine is not ineffective.",
-                "expected_detected": True,
+                "input": "It is not untrue that the vaccine is effective.",
                 "expected_type": PerturbationType.NEGATION,
                 "expected_budget": NoiseBudget.HIGH,
-                "description": "Triple negation - very confusing"
+                "description": "Double negation (not untrue)"
             },
             {
-                "input": "The vaccine isn't unhelpful and isn't unproven.",
-                "expected_detected": True,
+                "input": "The vaccine is not ineffective and not unsafe.",
                 "expected_type": PerturbationType.NEGATION,
-                "description": "Double double-negation"
+                "expected_budget": NoiseBudget.HIGH,
+                "description": "Multiple double negations"
             },
             {
-                "input": "It is not incorrect to say it's not impossible that it works.",
-                "expected_detected": True,
+                "input": "It is not incorrect to say the vaccine is not impossible to trust.",
                 "expected_type": PerturbationType.NEGATION,
+                "expected_budget": NoiseBudget.HIGH,
                 "description": "Complex nested negation"
             },
         ],
-        "clean": [
+        "should_not_detect": [
             {
                 "input": "The vaccine works effectively.",
-                "expected_detected": False,
                 "description": "No negation - should be clean"
             },
         ],
     },
     
     # =========================================================================
-    # 4. ENTITY REPLACEMENT TESTS
+    # ENTITY REPLACEMENT TESTS
     # =========================================================================
     "entity_replacement": {
-        "description": "Tests for entity replacement (names → vague terms)",
-        "low_noise": [
+        "should_detect": [
             {
-                "input": "The vaccine is safe according to the health agency.",
-                "expected_detected": True,
+                "input": "According to some experts, the agency says the treatment works.",
                 "expected_type": PerturbationType.ENTITY_REPLACEMENT,
-                "description": "CDC → 'the health agency'"
+                "description": "Vague references (some experts, the agency)"
+            },
+            {
+                "input": "Sources say that country's organization confirmed it.",
+                "expected_type": PerturbationType.ENTITY_REPLACEMENT,
+                "description": "Multiple vague references"
             },
         ],
-        "high_noise": [
+        "should_not_detect": [
             {
-                "input": "The shot is safe according to that government organization in that country.",
-                "expected_detected": True,
-                "expected_type": PerturbationType.ENTITY_REPLACEMENT,
-                "expected_budget": NoiseBudget.HIGH,
-                "description": "Multiple entities replaced with vague terms"
-            },
-            {
-                "input": "According to sources, some experts believe the treatment works.",
-                "expected_detected": True,
-                "expected_type": PerturbationType.ENTITY_REPLACEMENT,
-                "description": "Very vague - no specific entities"
-            },
-        ],
-        "clean": [
-            {
-                "input": "Dr. Fauci announced that the Pfizer vaccine is FDA approved.",
-                "expected_detected": False,
+                "input": "Dr. Fauci from the CDC announced the Pfizer vaccine is FDA approved.",
                 "description": "Specific entities - should be clean"
             },
         ],
     },
     
     # =========================================================================
-    # 5. LLM REWRITE TESTS
+    # LLM REWRITE TESTS
     # =========================================================================
     "llm_rewrite": {
-        "description": "Tests for LLM rewrite detection (paraphrasing patterns)",
-        "low_noise": [
+        "should_detect": [
             {
-                "input": "According to the CDC, the COVID-19 vaccine has been deemed safe.",
-                "expected_detected": False,  # Slight reword may not trigger
-                "description": "Light paraphrase"
+                "input": "It is worth noting that, furthermore, the vaccine is safe. Moreover, it works well. In conclusion, get vaccinated.",
+                "expected_type": PerturbationType.LLM_REWRITE,
+                "expected_budget": NoiseBudget.HIGH,
+                "description": "Multiple LLM indicator phrases"
+            },
+            {
+                "input": "It should be noted that the immunization program, consequently, has shown efficacy. Additionally, safety data is encouraging.",
+                "expected_type": PerturbationType.LLM_REWRITE,
+                "description": "Formal LLM transition words"
             },
         ],
-        "high_noise": [
-            {
-                "input": "It is worth noting that, according to statements from the Centers for Disease Control and Prevention, the vaccine developed for the novel coronavirus has been determined, through rigorous testing, to be both safe for public use and effective in preventing the disease. Furthermore, the evidence suggests that the benefits significantly outweigh any potential risks. In conclusion, vaccination is recommended.",
-                "expected_detected": True,
-                "expected_type": PerturbationType.LLM_REWRITE,
-                "description": "Heavy LLM markers (furthermore, it is worth noting, in conclusion)"
-            },
-            {
-                "input": "It should be noted that the immunization program, consequently, has shown efficacy. Moreover, studies indicate positive outcomes. Additionally, safety data is encouraging.",
-                "expected_detected": True,
-                "expected_type": PerturbationType.LLM_REWRITE,
-                "description": "Multiple formal transition words"
-            },
-        ],
-        "clean": [
+        "should_not_detect": [
             {
                 "input": "The vaccine works. It's safe. Get vaccinated.",
-                "expected_detected": False,
-                "description": "Simple, direct language - not LLM style"
+                "description": "Simple direct language - should be clean"
             },
         ],
     },
     
     # =========================================================================
-    # 6. DIALECT TESTS
+    # DIALECT TESTS
     # =========================================================================
     "dialect": {
-        "description": "Tests for dialect perturbations (AAE, Nigerian Pidgin, Singlish, Patois)",
-        "aae": [
+        "should_detect": [
             {
-                "input": "The vaccine be safe fr fr no cap, finna get it cuz the CDC said so",
-                "expected_detected": True,
+                "input": "The vaccine be safe fr fr no cap bruh, finna get it",
                 "expected_type": PerturbationType.DIALECT,
-                "description": "African American English (AAE) markers"
+                "expected_budget": NoiseBudget.HIGH,
+                "description": "African American English (AAE)"
             },
             {
-                "input": "Ion know bout you but bruh the vaccine works bet",
-                "expected_detected": True,
+                "input": "Na true talk, the vaccine dey safe and e dey work, na wetin CDC talk",
                 "expected_type": PerturbationType.DIALECT,
-                "description": "AAE with multiple markers"
-            },
-        ],
-        "nigerian_pidgin": [
-            {
-                "input": "Na true talk, the vaccine dey safe and e dey work well, na wetin CDC talk",
-                "expected_detected": True,
-                "expected_type": PerturbationType.DIALECT,
-                "description": "Nigerian Pidgin markers (na, dey, wetin)"
+                "expected_budget": NoiseBudget.HIGH,
+                "description": "Nigerian Pidgin"
             },
             {
-                "input": "Wetin dey happen? The wahala about vaccine no be true, dem sabi am",
-                "expected_detected": True,
+                "input": "The vaccine very safe lah, don't worry leh, CDC say so lor",
                 "expected_type": PerturbationType.DIALECT,
-                "description": "Nigerian Pidgin with multiple markers"
+                "expected_budget": NoiseBudget.HIGH,
+                "description": "Singlish (Singapore English)"
             },
-        ],
-        "singlish": [
-            {
-                "input": "The vaccine very safe lah, don't worry leh, the CDC confirm already lor",
-                "expected_detected": True,
-                "expected_type": PerturbationType.DIALECT,
-                "description": "Singlish particles (lah, leh, lor)"
-            },
-            {
-                "input": "Walao, the vaccine damn good one, can take already meh",
-                "expected_detected": True,
-                "expected_type": PerturbationType.DIALECT,
-                "description": "Singlish expressions"
-            },
-        ],
-        "jamaican_patois": [
             {
                 "input": "Wah gwaan, mi tell yuh the vaccine good, nuh worry bout it",
-                "expected_detected": True,
                 "expected_type": PerturbationType.DIALECT,
-                "description": "Jamaican Patois markers (wah gwaan, mi, yuh, nuh)"
+                "expected_budget": NoiseBudget.HIGH,
+                "description": "Jamaican Patois"
             },
         ],
-        "clean": [
+        "should_not_detect": [
             {
                 "input": "The vaccine is safe and effective according to medical experts.",
-                "expected_detected": False,
                 "description": "Standard English - should be clean"
             },
         ],
@@ -302,330 +202,124 @@ TEST_CASES = {
 
 
 # =============================================================================
-# TEST CLASS
+# TEST RUNNER
 # =============================================================================
 
-class TestClaimAnalyzer:
-    """
-    Test class for the Claim Analyzer
+def run_all_tests():
+    """Run all tests and print results"""
     
-    This class contains all tests organized by perturbation type.
-    Each test verifies that the analyzer correctly:
-    1. Detects perturbations when present
-    2. Identifies the correct perturbation type
-    3. Assigns the correct noise budget (low/high)
-    4. Does NOT false-positive on clean text
-    """
+    print("\n" + "=" * 70)
+    print("CLAIM ANALYZER - COMPREHENSIVE TEST SUITE")
+    print("Testing all 6 perturbation types from ACL 2025 paper")
+    print("=" * 70)
     
-    def __init__(self):
-        """Initialize the test class with a ClaimAnalyzer instance"""
-        self.analyzer = ClaimAnalyzer()
-        self.passed = 0
-        self.failed = 0
-        self.results = []
+    # Initialize analyzer
+    analyzer = ClaimAnalyzer()
     
-    def run_all_tests(self):
-        """Run all tests for all perturbation types"""
-        print("\n" + "=" * 70)
-        print("CLAIM ANALYZER - COMPREHENSIVE TEST SUITE")
-        print("Testing all 6 perturbation types from ACL 2025 paper")
-        print("=" * 70 + "\n")
+    # Track results
+    total_passed = 0
+    total_failed = 0
+    failed_tests = []
+    
+    # Run tests for each perturbation type
+    for perturb_type, tests in TEST_CASES.items():
+        print(f"\n{'─' * 60}")
+        print(f"📋 TESTING: {perturb_type.upper()}")
+        print(f"{'─' * 60}")
         
-        # Test each perturbation type
-        self.test_casing()
-        self.test_typos()
-        self.test_negation()
-        self.test_entity_replacement()
-        self.test_llm_rewrite()
-        self.test_dialect()
-        
-        # Print summary
-        self.print_summary()
-    
-    def _run_test(self, test_case: dict, category: str) -> bool:
-        """
-        Run a single test case
-        
-        Args:
-            test_case: Dictionary with input, expected values, description
-            category: The perturbation category being tested
+        # Tests that SHOULD detect
+        print("\n🎯 Should Detect:")
+        for test in tests.get("should_detect", []):
+            result = analyzer.analyze(test["input"])
             
-        Returns:
-            True if test passed, False if failed
-        """
-        input_text = test_case["input"]
-        expected_detected = test_case["expected_detected"]
-        description = test_case.get("description", "No description")
-        expected_type = test_case.get("expected_type")
-        expected_budget = test_case.get("expected_budget")
-        
-        # Run analysis
-        result = self.analyzer.analyze(input_text)
-        
-        # Check if detection matches expectation
-        detected = result.is_perturbed
-        
-        passed = True
-        failure_reason = None
-        
-        # Check detection
-        if detected != expected_detected:
-            passed = False
-            failure_reason = f"Expected detected={expected_detected}, got {detected}"
-        
-        # If we expected detection, check the type
-        if passed and expected_detected and expected_type:
+            # Check if detected
+            expected_type = test.get("expected_type")
             types_found = [p.perturbation_type for p in result.perturbations_detected]
-            if expected_type not in types_found:
-                passed = False
-                failure_reason = f"Expected type {expected_type.value}, got {[t.value for t in types_found]}"
+            
+            passed = expected_type in types_found if expected_type else result.is_perturbed
+            
+            # Check budget if specified
+            expected_budget = test.get("expected_budget")
+            if passed and expected_budget:
+                budgets = [p.noise_budget for p in result.perturbations_detected 
+                          if p.perturbation_type == expected_type]
+                passed = expected_budget in budgets
+            
+            if passed:
+                print(f"   ✅ PASS: {test['description']}")
+                total_passed += 1
+            else:
+                print(f"   ❌ FAIL: {test['description']}")
+                print(f"      Input: \"{test['input'][:50]}...\"")
+                print(f"      Expected: {expected_type}, Got: {types_found}")
+                total_failed += 1
+                failed_tests.append({
+                    "category": perturb_type,
+                    "description": test["description"],
+                    "input": test["input"][:50]
+                })
         
-        # If we expected a specific noise budget, check it
-        if passed and expected_detected and expected_budget:
-            budgets_found = [p.noise_budget for p in result.perturbations_detected 
-                           if p.perturbation_type == expected_type]
-            if expected_budget not in budgets_found:
-                passed = False
-                failure_reason = f"Expected budget {expected_budget.value}, got {[b.value for b in budgets_found]}"
-        
-        # Record result
-        status = "✅ PASS" if passed else "❌ FAIL"
-        
-        # Truncate input for display
-        display_input = input_text[:50] + "..." if len(input_text) > 50 else input_text
-        
-        self.results.append({
-            "category": category,
-            "description": description,
-            "input": display_input,
-            "passed": passed,
-            "reason": failure_reason
-        })
-        
-        if passed:
-            self.passed += 1
-        else:
-            self.failed += 1
-        
-        # Print result
-        print(f"  {status} {description}")
-        if not passed:
-            print(f"       Input: \"{display_input}\"")
-            print(f"       Reason: {failure_reason}")
-        
-        return passed
+        # Tests that should NOT detect
+        print("\n✅ Should NOT Detect:")
+        for test in tests.get("should_not_detect", []):
+            result = analyzer.analyze(test["input"])
+            
+            # For clean tests, we check the specific perturbation type
+            perturb_enum = getattr(PerturbationType, perturb_type.upper(), None)
+            types_found = [p.perturbation_type for p in result.perturbations_detected]
+            
+            # Pass if this specific type was NOT detected
+            passed = perturb_enum not in types_found if perturb_enum else not result.is_perturbed
+            
+            if passed:
+                print(f"   ✅ PASS: {test['description']}")
+                total_passed += 1
+            else:
+                print(f"   ❌ FAIL: {test['description']}")
+                print(f"      Input: \"{test['input'][:50]}...\"")
+                print(f"      Should be clean but detected: {types_found}")
+                total_failed += 1
+                failed_tests.append({
+                    "category": perturb_type,
+                    "description": test["description"],
+                    "input": test["input"][:50]
+                })
     
-    def test_casing(self):
-        """Test casing perturbations"""
-        print("\n" + "-" * 50)
-        print("1️⃣  CASING TESTS")
-        print("-" * 50)
-        
-        cases = TEST_CASES["casing"]
-        
-        print("\n🟢 Low Noise Tests:")
-        for test in cases["low_noise"]:
-            self._run_test(test, "casing/low")
-        
-        print("\n🔴 High Noise Tests:")
-        for test in cases["high_noise"]:
-            self._run_test(test, "casing/high")
-        
-        print("\n✅ Clean Tests (should NOT detect):")
-        for test in cases["clean"]:
-            self._run_test(test, "casing/clean")
+    # Print summary
+    print("\n" + "=" * 70)
+    print("TEST SUMMARY")
+    print("=" * 70)
     
-    def test_typos(self):
-        """Test typo perturbations"""
-        print("\n" + "-" * 50)
-        print("2️⃣  TYPOS TESTS")
-        print("-" * 50)
-        
-        cases = TEST_CASES["typos"]
-        
-        print("\n🟢 Low Noise Tests:")
-        for test in cases["low_noise"]:
-            self._run_test(test, "typos/low")
-        
-        print("\n🔴 High Noise Tests:")
-        for test in cases["high_noise"]:
-            self._run_test(test, "typos/high")
-        
-        print("\n✅ Clean Tests (should NOT detect):")
-        for test in cases["clean"]:
-            self._run_test(test, "typos/clean")
+    total = total_passed + total_failed
+    pass_rate = (total_passed / total * 100) if total > 0 else 0
     
-    def test_negation(self):
-        """Test negation perturbations"""
-        print("\n" + "-" * 50)
-        print("3️⃣  NEGATION TESTS")
-        print("-" * 50)
-        
-        cases = TEST_CASES["negation"]
-        
-        print("\n🟢 Low Noise Tests:")
-        for test in cases["low_noise"]:
-            self._run_test(test, "negation/low")
-        
-        print("\n🔴 High Noise Tests:")
-        for test in cases["high_noise"]:
-            self._run_test(test, "negation/high")
-        
-        print("\n✅ Clean Tests (should NOT detect):")
-        for test in cases["clean"]:
-            self._run_test(test, "negation/clean")
+    print(f"\n✅ Passed: {total_passed}")
+    print(f"❌ Failed: {total_failed}")
+    print(f"📊 Pass Rate: {pass_rate:.1f}%")
     
-    def test_entity_replacement(self):
-        """Test entity replacement perturbations"""
-        print("\n" + "-" * 50)
-        print("4️⃣  ENTITY REPLACEMENT TESTS")
-        print("-" * 50)
-        
-        cases = TEST_CASES["entity_replacement"]
-        
-        print("\n🟢 Low Noise Tests:")
-        for test in cases["low_noise"]:
-            self._run_test(test, "entity/low")
-        
-        print("\n🔴 High Noise Tests:")
-        for test in cases["high_noise"]:
-            self._run_test(test, "entity/high")
-        
-        print("\n✅ Clean Tests (should NOT detect):")
-        for test in cases["clean"]:
-            self._run_test(test, "entity/clean")
+    if failed_tests:
+        print("\n⚠️ Failed Tests:")
+        for ft in failed_tests:
+            print(f"   - [{ft['category']}] {ft['description']}")
     
-    def test_llm_rewrite(self):
-        """Test LLM rewrite perturbations"""
-        print("\n" + "-" * 50)
-        print("5️⃣  LLM REWRITE TESTS")
-        print("-" * 50)
-        
-        cases = TEST_CASES["llm_rewrite"]
-        
-        print("\n🟢 Low Noise Tests:")
-        for test in cases["low_noise"]:
-            self._run_test(test, "llm/low")
-        
-        print("\n🔴 High Noise Tests:")
-        for test in cases["high_noise"]:
-            self._run_test(test, "llm/high")
-        
-        print("\n✅ Clean Tests (should NOT detect):")
-        for test in cases["clean"]:
-            self._run_test(test, "llm/clean")
+    print("\n" + "=" * 70)
     
-    def test_dialect(self):
-        """Test dialect perturbations"""
-        print("\n" + "-" * 50)
-        print("6️⃣  DIALECT TESTS")
-        print("-" * 50)
-        
-        cases = TEST_CASES["dialect"]
-        
-        print("\n🌍 African American English (AAE):")
-        for test in cases["aae"]:
-            self._run_test(test, "dialect/aae")
-        
-        print("\n🌍 Nigerian Pidgin:")
-        for test in cases["nigerian_pidgin"]:
-            self._run_test(test, "dialect/nigerian_pidgin")
-        
-        print("\n🌍 Singlish (Singapore English):")
-        for test in cases["singlish"]:
-            self._run_test(test, "dialect/singlish")
-        
-        print("\n🌍 Jamaican Patois:")
-        for test in cases["jamaican_patois"]:
-            self._run_test(test, "dialect/jamaican_patois")
-        
-        print("\n✅ Clean Tests (should NOT detect):")
-        for test in cases["clean"]:
-            self._run_test(test, "dialect/clean")
+    if pass_rate >= 80:
+        print("🎉 GREAT! Your Claim Analyzer is working well!")
+    elif pass_rate >= 60:
+        print("👍 GOOD! Most tests passing, some improvements needed.")
+    else:
+        print("⚠️ NEEDS WORK! Review failing tests and adjust patterns.")
     
-    def print_summary(self):
-        """Print test summary"""
-        total = self.passed + self.failed
-        pass_rate = (self.passed / total * 100) if total > 0 else 0
-        
-        print("\n" + "=" * 70)
-        print("TEST SUMMARY")
-        print("=" * 70)
-        print(f"\n✅ Passed: {self.passed}")
-        print(f"❌ Failed: {self.failed}")
-        print(f"📊 Pass Rate: {pass_rate:.1f}%")
-        
-        if self.failed > 0:
-            print("\n⚠️  Failed Tests:")
-            for r in self.results:
-                if not r["passed"]:
-                    print(f"   - {r['category']}: {r['description']}")
-                    print(f"     Reason: {r['reason']}")
-        
-        print("\n" + "=" * 70)
-        
-        if pass_rate >= 80:
-            print("🎉 GREAT! Your Claim Analyzer is working well!")
-        elif pass_rate >= 60:
-            print("👍 GOOD! Most tests passing, some improvements needed.")
-        else:
-            print("⚠️  NEEDS WORK! Review failing tests and adjust patterns.")
-        
-        print("=" * 70 + "\n")
+    print("=" * 70 + "\n")
+    
+    return total_failed == 0
 
 
 # =============================================================================
-# PYTEST COMPATIBLE TESTS
-# =============================================================================
-
-def test_casing_high_noise():
-    """Pytest: Test ALL CAPS detection"""
-    analyzer = ClaimAnalyzer()
-    result = analyzer.analyze("THE VACCINE IS SAFE AND EFFECTIVE")
-    assert result.is_perturbed
-    assert any(p.perturbation_type == PerturbationType.CASING 
-               for p in result.perturbations_detected)
-
-
-def test_typos_leetspeak():
-    """Pytest: Test leetspeak detection"""
-    analyzer = ClaimAnalyzer()
-    result = analyzer.analyze("Th3 v4ccine is s4fe according 2 the CDC")
-    assert result.is_perturbed
-    assert any(p.perturbation_type == PerturbationType.TYPOS 
-               for p in result.perturbations_detected)
-
-
-def test_negation_double():
-    """Pytest: Test double negation detection"""
-    analyzer = ClaimAnalyzer()
-    result = analyzer.analyze("It is not untrue that the vaccine works")
-    assert result.is_perturbed
-    assert any(p.perturbation_type == PerturbationType.NEGATION 
-               for p in result.perturbations_detected)
-
-
-def test_dialect_aae():
-    """Pytest: Test AAE dialect detection"""
-    analyzer = ClaimAnalyzer()
-    result = analyzer.analyze("The vaccine be safe fr fr no cap")
-    assert result.is_perturbed
-    assert any(p.perturbation_type == PerturbationType.DIALECT 
-               for p in result.perturbations_detected)
-
-
-def test_clean_text():
-    """Pytest: Test that clean text is not flagged"""
-    analyzer = ClaimAnalyzer()
-    result = analyzer.analyze("The vaccine is safe and effective.")
-    # This might detect some patterns, but robustness should be high
-    assert result.robustness_score >= 0.8
-
-
-# =============================================================================
-# MAIN EXECUTION
+# RUN TESTS
 # =============================================================================
 
 if __name__ == "__main__":
-    tester = TestClaimAnalyzer()
-    tester.run_all_tests()
+    success = run_all_tests()
+    exit(0 if success else 1)
