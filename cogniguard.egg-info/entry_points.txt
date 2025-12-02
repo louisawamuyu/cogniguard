@@ -1,0 +1,2 @@
+[console_scripts]
+cogniguard = cogniguard.cli:main

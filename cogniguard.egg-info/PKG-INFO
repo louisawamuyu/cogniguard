@@ -1,3 +1,33 @@
+Metadata-Version: 2.4
+Name: cogniguard
+Version: 1.0.0
+Summary: AI Safety & Misinformation Detection - Detects 6 perturbation types from ACL 2025
+Home-page: https://github.com/louisawamuyu/cogniguard
+Author: Louisa Wamuyu Saburi
+Author-email: louisawamuyu@gmail.com
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: requires-python
+Dynamic: summary
+
 # 🛡️ CogniGuard AI Safety Platform
 
 **AI Safety & Misinformation Detection Platform**
