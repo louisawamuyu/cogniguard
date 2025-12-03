@@ -138,3 +138,4 @@ websockets==15.0.1
 Werkzeug==3.0.6
 yarl==1.22.0
 zipp==3.23.0
+nltk==3.9.1
