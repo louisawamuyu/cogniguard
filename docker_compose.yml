@@ -1,0 +1,39 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  # Our main CogniGuard API service
+  cogniguard-api:
+    # Build from current directory using Dockerfile
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    
+    # Name our container
+    container_name: cogniguard-container
+    
+    # Map port 5000 on your computer to port 5000 in container
+    ports:
+      - "5000:5000"
+    
+    # Restart if it crashes
+    restart: unless-stopped
+    
+    # Environment variables
+    environment:
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+    
+    # Health check - verify API is working
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+# Optional: Create a network
+networks:
+  default:
+    name: cogniguard-network
