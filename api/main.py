@@ -4,12 +4,17 @@ Run with: uvicorn api.main:app --reload
 Test at: http://localhost:8000/docs
 """
 
+from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
 import sys
 from pathlib import Path
+
+
+app = FastAPI(title="CogniGuard API")
 
 # Tell Python where to find cogniguard
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -37,17 +42,7 @@ class AnalyzeResponse(BaseModel):
 # Create the API
 @app.get("/")
 def home():
-    return {
-        "message": "Welcome to CogniGuard API!",
-        "description": "An API for detecting text perturbations and misinformation",
-        "docs": "Go to /docs for interactive documentation",
-        "health": "Go to /health to check API status",
-        "endpoints": {
-            "analyze": "POST /analyze - Analyze text for perturbations",
-            "examples": "GET /examples - Get example texts"
-        }
-    }
-
+    return RedirectResponse(url="/docs")
 
 # Allow requests from any website
 app.add_middleware(
