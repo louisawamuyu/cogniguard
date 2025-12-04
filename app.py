@@ -44,7 +44,7 @@ def load_integrated_analyzer():
 # ============================================================================
 # Import Claim Analyzer - ADD THIS
 try:
-    from cogniguardclaim_analyzer import ClaimAnalyzer, PerturbationType, NoiseBudget
+    from cogniguard.claim_analyzer import ClaimAnalyzer, PerturbationType, NoiseBudget
     CLAIM_ANALYZER_OK = True
     CLAIM_ERROR = None
 except Exception as e:
@@ -56,7 +56,7 @@ except Exception as e:
 
 # Import Integrated Analyzer - ADD THIS
 try:
-    from cogniguardintegrated_analyzer import IntegratedAnalyzer, OverallRiskLevel
+    from cogniguard.integrated_analyzer import IntegratedAnalyzer, OverallRiskLevel
     INTEGRATED_OK = True
     INTEGRATED_ERROR = None
 except Exception as e:
@@ -67,7 +67,7 @@ except Exception as e:
 
 # Try to import core detection engine
 try:
-    from cogniguarddetection_engine import CogniGuardEngine, ThreatLevel
+    from cogniguard.detection_engine import CogniGuardEngine, ThreatLevel
     CORE_AVAILABLE = True
 except ImportError:
     CORE_AVAILABLE = False
