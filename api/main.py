@@ -35,11 +35,19 @@ class AnalyzeResponse(BaseModel):
 
 
 # Create the API
-app = FastAPI(
-    title="CogniGuard API",
-    description="AI Safety & Misinformation Detection API",
-    version="1.0.0",
-)
+@app.get("/")
+def home():
+    return {
+        "message": "Welcome to CogniGuard API!",
+        "description": "An API for detecting text perturbations and misinformation",
+        "docs": "Go to /docs for interactive documentation",
+        "health": "Go to /health to check API status",
+        "endpoints": {
+            "analyze": "POST /analyze - Analyze text for perturbations",
+            "examples": "GET /examples - Get example texts"
+        }
+    }
+
 
 # Allow requests from any website
 app.add_middleware(
