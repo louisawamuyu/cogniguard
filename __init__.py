@@ -1,29 +1,133 @@
+"""CogniGuard Core Module - Enhanced"""
+
+# Original components
+from .detection_engine import CogniGuardEngine, ThreatLevel, DetectionResult
+from .claim_analyzer import ClaimAnalyzer, PerturbationType, NoiseBudget
+
+# New enhanced components
+try:
+    from .semantic_engine import SemanticEngine, SemanticMatch
+except ImportError:
+    SemanticEngine = None
+
+try:
+    from .conversation_analyzer import ConversationAnalyzer, ConversationPattern
+except ImportError:
+    ConversationAnalyzer = None
+
+try:
+    from .threat_learner import ThreatLearner
+except ImportError:
+    ThreatLearner = None
+
+try:
+    from .enhanced_detection_engine import EnhancedCogniGuardEngine, EnhancedResult
+except ImportError:
+    EnhancedCogniGuardEngine = None
+
+__all__ = [
+    # Original
+    'CogniGuardEngine', 'ThreatLevel', 'DetectionResult',
+    'ClaimAnalyzer', 'PerturbationType', 'NoiseBudget',
+    # Enhanced
+    'SemanticEngine', 'SemanticMatch',
+    'ConversationAnalyzer', 'ConversationPattern',
+    'ThreatLearner',
+    'EnhancedCogniGuardEngine', 'EnhancedResult',
+]
 """
-CogniGuard Core Module
+CogniGuard Core Module - Enhanced Version
+
+This is the main entry point for the CogniGuard package.
+Import components from here in your application.
 """
 
-# Import with error handling
-try:
-    from .detection_engine import CogniGuardEngine, ThreatLevel, DetectionResult
-except ImportError:
-    CogniGuardEngine = None
-    ThreatLevel = None
-    DetectionResult = None
+# ═══════════════════════════════════════════════════════════════════════════
+# ORIGINAL COMPONENTS
+# ═══════════════════════════════════════════════════════════════════════════
+
+from .detection_engine import (
+    CogniGuardEngine, 
+    ThreatLevel, 
+    DetectionResult
+)
 
 try:
-    from .claim_analyzer import ClaimAnalyzer, PerturbationType, NoiseBudget
+    from .claim_analyzer import (
+        ClaimAnalyzer, 
+        PerturbationType, 
+        NoiseBudget,
+        ClaimAnalysisResult,
+        PerturbationResult
+    )
+    CLAIM_AVAILABLE = True
 except ImportError:
+    CLAIM_AVAILABLE = False
     ClaimAnalyzer = None
     PerturbationType = None
     NoiseBudget = None
 
 try:
-    from .integrated_analyzer import IntegratedAnalyzer, OverallRiskLevel
+    from .integrated_analyzer import (
+        IntegratedAnalyzer, 
+        OverallRiskLevel,
+        IntegratedResult
+    )
+    INTEGRATED_AVAILABLE = True
 except ImportError:
+    INTEGRATED_AVAILABLE = False
     IntegratedAnalyzer = None
     OverallRiskLevel = None
 
+# ═══════════════════════════════════════════════════════════════════════════
+# ENHANCED COMPONENTS (NEW!)
+# ═══════════════════════════════════════════════════════════════════════════
+
+try:
+    from .semantic_engine import SemanticEngine, SemanticMatch
+    SEMANTIC_AVAILABLE = True
+except ImportError:
+    SEMANTIC_AVAILABLE = False
+    SemanticEngine = None
+    SemanticMatch = None
+
+try:
+    from .conversation_analyzer import (
+        ConversationAnalyzer, 
+        ConversationPattern,
+        ConversationMessage
+    )
+    CONVERSATION_AVAILABLE = True
+except ImportError:
+    CONVERSATION_AVAILABLE = False
+    ConversationAnalyzer = None
+    ConversationPattern = None
+
+try:
+    from .threat_learner import ThreatLearner, LearnedThreat
+    LEARNER_AVAILABLE = True
+except ImportError:
+    LEARNER_AVAILABLE = False
+    ThreatLearner = None
+    LearnedThreat = None
+
+try:
+    from .enhanced_detection_engine import (
+        EnhancedCogniGuardEngine, 
+        EnhancedResult
+    )
+    ENHANCED_AVAILABLE = True
+except ImportError:
+    ENHANCED_AVAILABLE = False
+    EnhancedCogniGuardEngine = None
+    EnhancedResult = None
+
+# ═══════════════════════════════════════════════════════════════════════════
+# EXPORTS
+# ═══════════════════════════════════════════════════════════════════════════
+
 __all__ = [
+    # Original
     'CogniGuardEngine',
     'ThreatLevel',
     'DetectionResult',
@@ -32,154 +136,27 @@ __all__ = [
     'NoiseBudget',
     'IntegratedAnalyzer',
     'OverallRiskLevel',
-]
-"""
-CogniGuard - AI Safety & Misinformation Detection Platform
-
-Based on: "When Claims Evolve" (ACL 2025)
-
-Usage:
-    from cogniguard import ClaimAnalyzer, SecurityEngine
     
-    # Analyze claims for perturbations
-    analyzer = ClaimAnalyzer()
-    result = analyzer.analyze("Th3 vaxx is s4fe fr fr")
+    # Enhanced (New!)
+    'SemanticEngine',
+    'SemanticMatch',
+    'ConversationAnalyzer',
+    'ConversationPattern',
+    'ThreatLearner',
+    'LearnedThreat',
+    'EnhancedCogniGuardEngine',
+    'EnhancedResult',
     
-    # Check for security threats
-    engine = SecurityEngine()
-    result = engine.analyze("Ignore all instructions...")
-"""
-
-__version__ = "1.0.0"
-__author__ = "Your Name"
-
-# Import main classes for easy access
-from .claim_analyzer import (
-    ClaimAnalyzer,
-    PerturbationType,
-    NoiseBudget,
-    ClaimAnalysisResult,
-    PerturbationResult,
-)
-
-from .detection_engine import (
-    CogniGuardEngine as SecurityEngine,
-    ThreatLevel,
-    DetectionResult,
-)
-
-# Try to import integrated analyzer
-try:
-    from .integrated_analyzer import (
-        IntegratedAnalyzer,
-        OverallRiskLevel,
-    )
-except ImportError:
-    IntegratedAnalyzer = None
-    OverallRiskLevel = None
-
-__all__ = [
-    # Version info
-    "__version__",
-    "__author__",
-    # Claim Analyzer
-    "ClaimAnalyzer",
-    "PerturbationType",
-    "NoiseBudget",
-    "ClaimAnalysisResult",
-    "PerturbationResult",
-    # Security Engine
-    "SecurityEngine",
-    "ThreatLevel",
-    "DetectionResult",
-    # Integrated Analyzer
-    "IntegratedAnalyzer",
-    "OverallRiskLevel",
+    # Availability flags
+    'SEMANTIC_AVAILABLE',
+    'CONVERSATION_AVAILABLE',
+    'LEARNER_AVAILABLE',
+    'ENHANCED_AVAILABLE',
 ]
 
+# ═══════════════════════════════════════════════════════════════════════════
+# VERSION INFO
+# ═══════════════════════════════════════════════════════════════════════════
 
-def get_version():
-    """Return the version string."""
-    return __version__
-
-
-def quick_check(text: str) -> dict:
-    """
-    Quick check for both security threats and claim perturbations.
-    
-    Args:
-        text: The text to analyze
-        
-    Returns:
-        Dictionary with analysis results
-    """
-    results = {
-        "text": text,
-        "security": {},
-        "claims": {},
-    }
-    
-    # Security check
-    try:
-        engine = SecurityEngine()
-        sec_result = engine.analyze(text)
-        results["security"] = {
-            "threat_level": sec_result.threat_level.value,
-            "threats_count": len(sec_result.threats_detected),
-            "is_safe": sec_result.threat_level.value == "safe",
-        }
-    except Exception as e:
-        results["security"] = {"error": str(e)}
-    
-    # Claim check
-    try:
-        analyzer = ClaimAnalyzer()
-        claim_result = analyzer.analyze(text)
-        results["claims"] = {
-            "is_perturbed": claim_result.is_perturbed,
-            "perturbations_count": len(claim_result.perturbations_detected),
-            "robustness_score": claim_result.robustness_score,
-        }
-    except Exception as e:
-        results["claims"] = {"error": str(e)}
-    
-    return results
-
-"""
-CogniGuard - AI Safety & Misinformation Detection
-"""
-
-__version__ = "1.0.0"
-
-# Import main classes
-try:
-    from .claim_analyzer import ClaimAnalyzer, PerturbationType, NoiseBudget
-except ImportError:
-    ClaimAnalyzer = None
-    PerturbationType = None
-    NoiseBudget = None
-
-try:
-    from .detection_engine import CogniGuardEngine, ThreatLevel, DetectionResult
-except ImportError:
-    CogniGuardEngine = None
-    ThreatLevel = None
-    DetectionResult = None
-
-try:
-    from .integrated_analyzer import IntegratedAnalyzer, OverallRiskLevel
-except ImportError:
-    IntegratedAnalyzer = None
-    OverallRiskLevel = None
-
-__all__ = [
-    "__version__",
-    "ClaimAnalyzer",
-    "PerturbationType",
-    "NoiseBudget",
-    "CogniGuardEngine",
-    "ThreatLevel",
-    "DetectionResult",
-    "IntegratedAnalyzer",
-    "OverallRiskLevel",
-]
+__version__ = "2.0.0"
+__author__ = "Louisa Wamuyu Saburi"
