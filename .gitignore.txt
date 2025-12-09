@@ -28,3 +28,31 @@ openai_key.txt
 
 # Secret files - never upload these!
 .streamlit/secrets.toml
+
+
+
+
+# Secrets - NEVER push these!
+.streamlit/secrets.toml
+secrets.toml
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Temporary files
+*.tmp
+*.log
+test_threats.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
