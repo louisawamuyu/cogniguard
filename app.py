@@ -466,6 +466,18 @@ if 'engine' not in st.session_state:
     else:
         st.session_state.engine = None
 
+# ============================================================
+# INITIALIZE AI INTEGRATION MANAGER
+# ============================================================
+if 'ai_manager' not in st.session_state:
+    try:
+        from ai_integration import AIIntegrationManager
+        st.session_state.ai_manager = AIIntegrationManager()
+        print("[OK] AI Integration Manager loaded")
+    except Exception as e:
+        st.session_state.ai_manager = None
+        print(f"[WARN] AI Integration not available: {e}")
+
 # Initialize Database
 if 'database' not in st.session_state:
     try:
@@ -686,9 +698,20 @@ with st.sidebar:
     else:
         st.warning("⚠️ Core Engine Not Loaded")
     
-    # AI Integration
-    if st.session_state.get('ai_manager'):
-        st.success("✅ AI Integration Ready")
+        # AI Integration Status
+    ai_mgr = st.session_state.get('ai_manager')
+    if ai_mgr is not None:
+        try:
+            if ai_mgr.is_configured():
+                providers = ai_mgr.get_available_providers()
+                if providers:
+                    st.success(f"✅ AI Integration ({len(providers)} providers)")
+                else:
+                    st.info("ℹ️ AI Not Configured")
+            else:
+                st.info("ℹ️ AI Not Configured")
+        except:
+            st.info("ℹ️ AI Not Configured")
     else:
         st.info("ℹ️ AI Not Configured")
     
