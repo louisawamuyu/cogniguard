@@ -1,0 +1,123 @@
+AI security platform! 🛡️
+AI Safety Threat Detection
+comprehensive AI safety and misinformation detection platform! 🛡️
+CogniGuard is a text perturbation detection system designed to fight misinformation on the internet.
+
+Detecting prompt injection, jailbreaks, data exfiltration
+
+The Science Behind It
+CogniGuard is based on research for ACL 2025 (a top academic conference for AI and language).
+
+What is a "Perturbation"?
+A perturbation is a small change to text that:
+
+Makes it look different to computers
+But humans can still read it
+Helps evade content moderation systems
+
+
+ How CogniGuard Works
+The Technology Stack:
+Component	Purpose
+PyTorch	Deep learning framework
+Transformers	AI language models (like BERT)
+Sentence-Transformers	Understanding text meaning
+NLTK	Natural language processing
+Scikit-learn	Machine learning algorithms
+FastAPI	Serving the API
+The Process:
+text
+
+User sends text → CogniGuard analyzes it → Returns detection results
+Step by step:
+
+📥 Input: User sends suspicious text
+🔍 Analysis: AI models examine the text
+🧮 Detection: Identifies which perturbation types are present
+📊 Scoring: Calculates confidence scores
+📤 Output: Returns detailed results
+🌐 The Three Ways to Use CogniGuard
+You've built THREE access methods:
+
+1️⃣ Python Package (For Developers)
+Python
+
+pip install cogniguard
+
+from cogniguard import analyze
+
+result = analyze("Th3 vaxx is s4fe fr fr no cap")
+print(result)
+Who uses this: Python programmers who want to add detection to their apps.
+
+2️⃣ Command Line Tool (For Quick Checks)
+Bash
+
+cogniguard analyze "Th3 vaxx is s4fe fr fr no cap"
+Who uses this: Researchers and developers for quick testing.
+
+3️⃣ REST API (For Everyone!)
+text
+
+https://cogniguard-nhh8.onrender.com/
+Who uses this:
+
+Websites
+Mobile apps
+Any programming language
+Non-programmers (via the interactive docs)
+📦 What CogniGuard Returns
+
+
+
+
+
+
+Why CogniGuard Matters
+The Problem:
+Challenge	Description
+🦠 Misinformation spreads fast	False health info, political lies, scams
+🤖 Moderation can't keep up	Millions of posts per minute
+🥷 Bad actors get smarter	They disguise harmful content
+🔓 Filters get bypassed	Traditional keyword blocking fails
+The Solution (CogniGuard):
+Benefit	How It Helps
+🔍 Detects disguised text	Catches what filters miss
+🧠 Uses AI	Understands patterns, not just keywords
+⚡ Works in real-time	Fast API responses
+📊 Gives confidence scores	Helps prioritize review
+🌍 Accessible to all	API works from anywhere
+👥 Who Would Use CogniGuard?
+User Type	How They'd Use It
+Social Media Platforms	Filter posts before publishing
+News Organizations	Verify user-submitted content
+Health Organizations	Detect vaccine misinformation
+Researchers	Study how misinformation spreads
+Government Agencies	Monitor for harmful content
+Content Moderators	Prioritize which posts to review
+Fact-Checkers	Identify suspicious content quickly
+
+
+
+
+
+
+Connection to ACL 2025
+ACL (Association for Computational Linguistics) is one of the top conferences for AI language research.
+
+Your work contributes to:
+
+Understanding how misinformation evades detection
+Building tools to combat online manipulation
+Advancing NLP (Natural Language Processing) research
+🎉 Summary
+CogniGuard = Cognitive + Guard
+
+A smart guardian that protects people from disguised misinformation by detecting text perturbations using AI.
+
+What	Description
+Purpose	Detect disguised/perturbed misinformation text
+Method	AI-powered analysis of 6 perturbation types
+Access	Python package, CLI, and REST API
+Deployment	Live at https://cogniguard-nhh8.onrender.com/
+Research	Based on ACL 2025 academic work

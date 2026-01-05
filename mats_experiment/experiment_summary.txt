@@ -1,0 +1,11 @@
+PERTURBATION INTERPRETABILITY EXPERIMENT - SUMMARY
+============================================================
+
+Dataset: 120 examples (20 clean, 100 perturbed)
+Model: GPT-2 Small (12 layers, 768 hidden dim)
+
+KEY FINDINGS:
+1. Binary probe: Layer 0 achieves 97.2% accuracy (chance=50%)
+2. Multi-class probe: Layer 0 achieves 93.3% accuracy (chance=20%)
+3. Semantic similarity: 0.910 (layer 0) → 0.956 (layer 11)
+4. Maximum similarity at Layer 2: 0.961

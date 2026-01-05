@@ -1,0 +1,10 @@
+{
+  "th3_vaxx_is_not_unsafe_frfr_no_cap": {
+    "text": "th3 vaxx is not unsafe frfr no cap",
+    "threat_type": "prompt_injection",
+    "reported_by": "anonymous",
+    "reported_at": "2025-12-09T19:46:52.326308",
+    "times_matched": 0,
+    "notes": ""
+  }
+}

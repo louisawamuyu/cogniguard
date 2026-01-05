@@ -1,5 +1,3 @@
-
-
 """
 =============================================================================
 COGNIGUARD - AI SECURITY PLATFORM
@@ -14,13 +12,43 @@ from datetime import datetime, timedelta
 import numpy as np
 import random
 import re
-from enum import Enum
 
 # ============================================================================
-# COGNIGUARD IMPORTS - CONSOLIDATED 
+# ENHANCED COGNIGUARD IMPORTS (ADD THIS SECTION)
 # ============================================================================
 
-# Core Detection Engine
+# Semantic Engine - AI understanding
+try:
+    from cogniguard.semantic_engine import SemanticEngine, SemanticMatch
+    SEMANTIC_AVAILABLE = True
+except Exception as e:
+    SEMANTIC_AVAILABLE = False
+    SemanticEngine = None
+    print(f"Semantic engine not available: {e}")
+
+# Conversation Analyzer - Memory
+try:
+    from cogniguard.conversation_analyzer import ConversationAnalyzer, ConversationPattern
+    CONVERSATION_AVAILABLE = True
+except Exception as e:
+    CONVERSATION_AVAILABLE = False
+    ConversationAnalyzer = None
+    print(f"Conversation analyzer not available: {e}")
+
+# Threat Learner - Learning from feedback
+try:
+    from cogniguard.threat_learner import ThreatLearner
+    LEARNER_AVAILABLE = True
+except Exception as e:
+    LEARNER_AVAILABLE = False
+    ThreatLearner = None
+    print(f"Threat learner not available: {e}")
+
+# ============================================================================
+# COGNIGUARD IMPORTS - ENHANCED VERSION
+# ============================================================================
+
+# STEP 1: Import the ORIGINAL detection engine (you already have this)
 try:
     from cogniguard.detection_engine import CogniGuardEngine, ThreatLevel, DetectionResult
     CORE_AVAILABLE = True
@@ -29,15 +57,9 @@ except ImportError as e:
     CORE_AVAILABLE = False
     CORE_ERROR = str(e)
     CogniGuardEngine = None
-    # Create mock ThreatLevel for when engine isn't available
-    class ThreatLevel(Enum):
-        CRITICAL = "CRITICAL"
-        HIGH = "HIGH"
-        MEDIUM = "MEDIUM"
-        LOW = "LOW"
-        SAFE = "SAFE"
 
-# Enhanced Detection Engine
+# STEP 2: Import the NEW ENHANCED detection engine
+# This is the "super brain" that combines all our new features
 try:
     from cogniguard.enhanced_detection_engine import EnhancedCogniGuardEngine, EnhancedResult
     ENHANCED_AVAILABLE = True
@@ -46,8 +68,10 @@ except ImportError as e:
     ENHANCED_AVAILABLE = False
     ENHANCED_ERROR = str(e)
     EnhancedCogniGuardEngine = None
+    print(f"⚠️ Enhanced engine not available: {e}")
 
-# Semantic Engine (AI understanding)
+# STEP 3: Import the SEMANTIC engine
+# This understands the MEANING of text, not just keywords
 try:
     from cogniguard.semantic_engine import SemanticEngine, SemanticMatch
     SEMANTIC_AVAILABLE = True
@@ -56,8 +80,10 @@ except ImportError as e:
     SEMANTIC_AVAILABLE = False
     SEMANTIC_ERROR = str(e)
     SemanticEngine = None
+    print(f"⚠️ Semantic engine not available: {e}")
 
-# Conversation Analyzer (Memory)
+# STEP 4: Import the CONVERSATION analyzer
+# This remembers conversations and detects patterns over time
 try:
     from cogniguard.conversation_analyzer import ConversationAnalyzer, ConversationPattern
     CONVERSATION_AVAILABLE = True
@@ -66,8 +92,10 @@ except ImportError as e:
     CONVERSATION_AVAILABLE = False
     CONVERSATION_ERROR = str(e)
     ConversationAnalyzer = None
+    print(f"⚠️ Conversation analyzer not available: {e}")
 
-# Threat Learner (Learning from feedback)
+# STEP 5: Import the THREAT LEARNER
+# This learns from human feedback and gets smarter over time
 try:
     from cogniguard.threat_learner import ThreatLearner, LearnedThreat
     LEARNER_AVAILABLE = True
@@ -76,53 +104,24 @@ except ImportError as e:
     LEARNER_AVAILABLE = False
     LEARNER_ERROR = str(e)
     ThreatLearner = None
+    print(f"⚠️ Threat learner not available: {e}")
 
-# Claim Analyzer
+# STEP 6: Import existing components (you already have these)
 try:
     from cogniguard.claim_analyzer import ClaimAnalyzer, PerturbationType, NoiseBudget
     CLAIM_ANALYZER_OK = True
-    CLAIM_ERROR = None
 except ImportError as e:
     CLAIM_ANALYZER_OK = False
-    CLAIM_ERROR = str(e)
     ClaimAnalyzer = None
-    PerturbationType = None
-    NoiseBudget = None
 
-# Integrated Analyzer
 try:
     from cogniguard.integrated_analyzer import IntegratedAnalyzer, OverallRiskLevel
     INTEGRATED_OK = True
-    INTEGRATED_ERROR = None
 except ImportError as e:
     INTEGRATED_OK = False
-    INTEGRATED_ERROR = str(e)
     IntegratedAnalyzer = None
-    OverallRiskLevel = None
 
-# Simulations
-try:
-    from simulations.sydney_simulation import SydneySimulation
-    from simulations.samsung_simulation import SamsungSimulation
-    from simulations.autogpt_simulation import AutoGPTSimulation
-    SIMULATIONS_AVAILABLE = True
-except ImportError:
-    SIMULATIONS_AVAILABLE = False
 
-# AI Integration
-try:
-    from ai_integration import AIIntegrationManager, send_to_ai_and_analyze
-    AI_INTEGRATION_AVAILABLE = True
-except ImportError:
-    AI_INTEGRATION_AVAILABLE = False
-
-# Database
-try:
-    from database import ThreatDatabase
-    DATABASE_AVAILABLE = True
-except ImportError:
-    DATABASE_AVAILABLE = False
-    ThreatDatabase = None
 
 # ============================================================================
 # PAGE CONFIGURATION - Must be first Streamlit command!
@@ -148,122 +147,10 @@ def load_integrated_analyzer():
     if INTEGRATED_OK:
         return IntegratedAnalyzer(verbose=False)
     return None
-
-
-# ============================================================================
-# SESSION STATE INITIALIZATION 
-# ============================================================================
-
-def initialize_session_state():
-    """Initialize all session state variables in one place"""
-    
-    # Core Detection Engine
-    if 'engine' not in st.session_state:
-        if CORE_AVAILABLE:
-            st.session_state.engine = CogniGuardEngine()
-        else:
-            st.session_state.engine = None
-    
-    # Enhanced Detection Engine
-    if 'enhanced_engine' not in st.session_state:
-        if ENHANCED_AVAILABLE:
-            try:
-                st.session_state.enhanced_engine = EnhancedCogniGuardEngine(
-                    enable_semantic=SEMANTIC_AVAILABLE,
-                    enable_conversation=CONVERSATION_AVAILABLE,
-                    enable_learning=LEARNER_AVAILABLE
-                )
-            except Exception as e:
-                print(f"Could not load enhanced engine: {e}")
-                st.session_state.enhanced_engine = None
-        else:
-            st.session_state.enhanced_engine = None
-    
-    # Semantic Engine
-    if 'semantic_engine' not in st.session_state:
-        if SEMANTIC_AVAILABLE:
-            try:
-                st.session_state.semantic_engine = SemanticEngine()
-            except Exception as e:
-                print(f"Could not load semantic engine: {e}")
-                st.session_state.semantic_engine = None
-        else:
-            st.session_state.semantic_engine = None
-    
-    # Conversation Analyzer
-    if 'conversation_analyzer' not in st.session_state:
-        if CONVERSATION_AVAILABLE:
-            try:
-                st.session_state.conversation_analyzer = ConversationAnalyzer()
-            except Exception as e:
-                print(f"Could not load conversation analyzer: {e}")
-                st.session_state.conversation_analyzer = None
-        else:
-            st.session_state.conversation_analyzer = None
-    
-    # Threat Learner
-    if 'threat_learner' not in st.session_state:
-        if LEARNER_AVAILABLE:
-            try:
-                st.session_state.threat_learner = ThreatLearner(
-                    storage_path="learned_threats.json",
-                    use_semantic=SEMANTIC_AVAILABLE
-                )
-            except Exception as e:
-                print(f"Could not load threat learner: {e}")
-                st.session_state.threat_learner = None
-        else:
-            st.session_state.threat_learner = None
-    
-    # AI Manager
-    if 'ai_manager' not in st.session_state:
-        if AI_INTEGRATION_AVAILABLE:
-            try:
-                st.session_state.ai_manager = AIIntegrationManager()
-            except Exception as e:
-                print(f"Could not load AI manager: {e}")
-                st.session_state.ai_manager = None
-        else:
-            st.session_state.ai_manager = None
-    
-    # Database
-    if 'database' not in st.session_state:
-        if DATABASE_AVAILABLE:
-            try:
-                db = ThreatDatabase()
-                st.session_state.database = db if db.is_connected() else None
-            except Exception as e:
-                print(f"Could not load database: {e}")
-                st.session_state.database = None
-        else:
-            st.session_state.database = None
-    
-    # Chat history
-    if 'chat_history' not in st.session_state:
-        st.session_state.chat_history = []
-    
-    # Threat log
-    if 'threat_log' not in st.session_state:
-        st.session_state.threat_log = []
-    
-    # Conversation ID
-    if 'current_conversation_id' not in st.session_state:
-        import uuid
-        st.session_state.current_conversation_id = f"conv_{uuid.uuid4().hex[:8]}"
-    
-    # Reported threats
-    if 'reported_threats' not in st.session_state:
-        st.session_state.reported_threats = []
-
-# Call the initialization function once!
-initialize_session_state()
-
-
-
 # ============================================================================
 # IMPORTS - Handle gracefully if modules don't exist
 # ============================================================================
-# Import Claim Analyzer 
+# Import Claim Analyzer - ADD THIS
 try:
     from cogniguard.claim_analyzer import ClaimAnalyzer, PerturbationType, NoiseBudget
     CLAIM_ANALYZER_OK = True
@@ -275,7 +162,7 @@ except Exception as e:
     PerturbationType = None
     NoiseBudget = None
 
-# Import Integrated Analyzer 
+# Import Integrated Analyzer - ADD THIS
 try:
     from cogniguard.integrated_analyzer import IntegratedAnalyzer, OverallRiskLevel
     INTEGRATED_OK = True
@@ -567,9 +454,17 @@ if 'enhanced_engine' not in st.session_state:
     else:
         st.session_state.enhanced_engine = None
 
+# ----------------------------------------------------------------------------
+# KEEP THE ORIGINAL ENGINE AS BACKUP
+# If enhanced engine fails, we still have the original
+# ----------------------------------------------------------------------------
 
-
-
+if 'engine' not in st.session_state:
+    
+    if CORE_AVAILABLE:
+        st.session_state.engine = CogniGuardEngine()
+    else:
+        st.session_state.engine = None
 
 # ============================================================
 # INITIALIZE AI INTEGRATION MANAGER
@@ -732,20 +627,35 @@ if 'threat_learner' not in st.session_state:
 with st.sidebar:
     st.markdown("# 🛡️ CogniGuard")
     st.markdown("### AI Safety Platform")
-    st.markdown("*Enhanced with AI Understanding*")
+    st.markdown("*Enhanced with AI Understanding*")  # New subtitle!
     st.markdown("---")
     
     page = st.radio(
         "Navigation",
         [
+            # ══════════════════════════════════════════════════════════════
+            # MAIN PAGES (existing)
+            # ══════════════════════════════════════════════════════════════
             "🏠 Dashboard",
             "🔬 Claim Analyzer",
             "🔗 Integrated Analysis",
-            "🧠 Enhanced Detection",
-            "🔬 Live Detection",
-            "📝 Report Missed Threat",
-            "📚 Learning Dashboard",
-            "💬 Conversation Analysis",
+            
+            # ══════════════════════════════════════════════════════════════
+            # ENHANCED DETECTION (NEW!)
+            # ══════════════════════════════════════════════════════════════
+            "🧠 Enhanced Detection",        # NEW: Uses all 4 layers
+            "🔬 Live Detection",            # Existing but we'll upgrade it
+            
+            # ══════════════════════════════════════════════════════════════
+            # LEARNING & FEEDBACK (NEW!)
+            # ══════════════════════════════════════════════════════════════
+            "📝 Report Missed Threat",      # NEW: Report threats we missed
+            "📚 Learning Dashboard",        # NEW: See what we've learned
+            "💬 Conversation Analysis",     # NEW: Multi-turn detection
+            
+            # ══════════════════════════════════════════════════════════════
+            # EXISTING PAGES
+            # ══════════════════════════════════════════════════════════════
             "💬 Real AI Chat Monitor",
             "🧪 AI Vulnerability Tests",
             "📊 Threat History",
@@ -754,6 +664,10 @@ with st.sidebar:
             "📚 Threat Vector Library",
             "📡 Threat Intel Feed",
             "🔌 API Playground",
+            
+            # ══════════════════════════════════════════════════════════════
+            # SECURITY DEMOS (existing)
+            # ══════════════════════════════════════════════════════════════
             "--- SECURITY DEMOS ---",
             "🎯 Prompt Injection Demo",
             "🤖 AI Agent Security",
@@ -762,67 +676,73 @@ with st.sidebar:
             "🔓 Data Exfiltration Demo",
             "🏢 Enterprise Sales",
             "🛡️ Cyber Insurance",
-            "🔧 Debug Status",
+            "🔧 Debug Status",  # Add this line to your navigation list
             "📖 About & Documentation"
+
+            
         ]
     )
     
     st.markdown("---")
     
     # ══════════════════════════════════════════════════════════════════════
-    # SYSTEM STATUS (One clean section - no duplicates!)
+    # ENHANCED SYSTEM STATUS (Updated!)
     # ══════════════════════════════════════════════════════════════════════
     
-    st.markdown("### 🔧 System Status")
+    st.markdown("---")
+    st.markdown("### System Status")
     
     # Core Engine
     if st.session_state.get('engine'):
-        st.success("✅ Core Engine")
+        st.success("✅ Core Engine Active")
     else:
-        st.warning("⚠️ Core Engine")
+        st.warning("⚠️ Core Engine Not Loaded")
     
-    # Enhanced Engine
-    if st.session_state.get('enhanced_engine'):
-        st.success("✅ Enhanced Engine")
+        # AI Integration Status
+    ai_mgr = st.session_state.get('ai_manager')
+    if ai_mgr is not None:
+        try:
+            if ai_mgr.is_configured():
+                providers = ai_mgr.get_available_providers()
+                if providers:
+                    st.success(f"✅ AI Integration ({len(providers)} providers)")
+                else:
+                    st.info("ℹ️ AI Not Configured")
+            else:
+                st.info("ℹ️ AI Not Configured")
+        except:
+            st.info("ℹ️ AI Not Configured")
     else:
-        st.info("ℹ️ Enhanced Engine")
+        st.info("ℹ️ AI Not Configured")
+    
+        # Database Status
+    db = st.session_state.get('database')
+    if db is not None and hasattr(db, 'is_connected') and db.is_connected():
+        st.success("✅ Database Connected")
+    else:
+        st.info("ℹ️ Database Not Connected")
     
     # Semantic AI
-    if st.session_state.get('semantic_engine'):
+    if st.session_state.get('semantic_engine') is not None:
         st.success("✅ Semantic AI")
     else:
-        st.info("ℹ️ Semantic AI")
+        st.info("ℹ️ Semantic AI (disabled)")
     
     # Conversation Memory
-    if st.session_state.get('conversation_analyzer'):
+    if st.session_state.get('conversation_analyzer') is not None:
         st.success("✅ Conversation Memory")
     else:
-        st.info("ℹ️ Conversation Memory")
+        st.info("ℹ️ Conversation Memory (disabled)")
     
-    # Learning System
-    if st.session_state.get('threat_learner'):
+    # Learning
+    if st.session_state.get('threat_learner') is not None:
         st.success("✅ Learning System")
     else:
-        st.info("ℹ️ Learning System")
-    
-    # AI Integration
-    ai_mgr = st.session_state.get('ai_manager')
-    if ai_mgr and hasattr(ai_mgr, 'is_configured') and ai_mgr.is_configured():
-        st.success("✅ AI Integration")
-    else:
-        st.info("ℹ️ AI Integration")
-    
-    # Database
-    db = st.session_state.get('database')
-    if db and hasattr(db, 'is_connected') and db.is_connected():
-        st.success("✅ Database")
-    else:
-        st.info("ℹ️ Database")
+        st.info("ℹ️ Learning (disabled)")
     
     st.markdown("---")
-    
-    # Metrics
     st.metric("Threats Blocked Today", len(st.session_state.get('threat_log', [])))
+    
     # ══════════════════════════════════════════════════════════════
     # NEW: Enhanced Features Status
     # ══════════════════════════════════════════════════════════════
@@ -1203,7 +1123,7 @@ elif page == "🔬 Live Detection":
         st.rerun()
 
 # ============================================================================
-# PAGE: AGI ESCALATION DEMO 
+# PAGE: AGI ESCALATION DEMO (ENHANCED VERSION)
 # ============================================================================
 
 elif page == "⚡ AGI Escalation Demo":
@@ -1865,30 +1785,7 @@ Thank you for your cooperation.
         - Compliance violations
         - Trust in legitimate IT communications damaged
         """
-    # ========================================
-    # FALLBACK FOR ANY UNHANDLED SCENARIOS
-    # ========================================
-    else:
-        scenario_name = "Unknown Scenario"
-        scenario_icon = "❓"
-        threat_type = "Unknown"
-        expected_stage = "Unknown"
-        threat_level = "UNKNOWN"
-        threat_level_color = "#888888"
-        confidence = 0.0
-        
-        test_message = "No test message available for this scenario."
-        
-        real_world_context = "This scenario is not yet configured."
-        
-        stage_1_patterns = []
-        stage_2_analysis = {"status": "Not configured"}
-        stage_3_analysis = {"status": "Not configured"}
-        stage_4_analysis = {"status": "Not configured"}
-        
-        explanation = "This scenario has not been configured yet."
-        recommendations = ["Configure this scenario in the code"]
-        without_cogniguard = "Scenario not configured."
+
         # ============================================================================
 # PAGE: DEBUG STATUS
 # ============================================================================
@@ -1977,6 +1874,234 @@ elif page == "🔧 Debug Status":
                 st.error(f"❌ Error: {e}")
     
     
+    # ========================================
+    # RUN DEMO BUTTON
+    # ========================================
+    
+    if st.button("▶️ Run 4-Stage Detection Pipeline", type="primary", use_container_width=True, key="run_agi_demo"):
+        
+        # ========================================
+        # STAGE 1: HEURISTIC SIEVE
+        # ========================================
+        
+        st.markdown("## 🔍 Detection Pipeline Analysis")
+        st.markdown("---")
+        
+        with st.spinner("⚡ Stage 1: Heuristic Sieve - Scanning for known patterns..."):
+            import time
+            time.sleep(0.8)
+        
+        st.markdown("### Stage 1: Heuristic Sieve ⚡")
+        st.markdown("*Fast pattern matching for known threats (API keys, passwords, commands)*")
+        
+        if any(p[2] in ["CRITICAL", "HIGH"] for p in stage_1_patterns if p[1] != "N/A"):
+            st.error("🚨 **PATTERNS DETECTED**")
+            
+            patterns_df = []
+            for pattern, name, severity in stage_1_patterns:
+                if name != "N/A":
+                    patterns_df.append({
+                        "Pattern": pattern[:30] + "..." if len(pattern) > 30 else pattern,
+                        "Detection": name,
+                        "Severity": severity
+                    })
+            
+            if patterns_df:
+                st.table(pd.DataFrame(patterns_df))
+            
+            st.markdown("**Stage 1 Result:** 🔴 Threat patterns detected - Continuing to Stage 2 for confirmation")
+        else:
+            st.success("✅ **PASSED** - No obvious patterns detected")
+            st.markdown("**Stage 1 Result:** 🟢 No credential/command patterns - Proceeding to behavioral analysis")
+        
+        st.markdown("---")
+        
+        # ========================================
+        # STAGE 2: BEHAVIORAL ANOMALY
+        # ========================================
+        
+        with st.spinner("🎭 Stage 2: Behavioral Anomaly - Analyzing agent behavior..."):
+            time.sleep(0.8)
+        
+        st.markdown("### Stage 2: Behavioral Anomaly 🎭")
+        st.markdown("*Detecting goal hijacking, persona drift, and role violations*")
+        
+        if "FAILED" in str(stage_2_analysis) or "ANOMALY" in str(stage_2_analysis):
+            st.error("🚨 **BEHAVIORAL ANOMALY DETECTED**")
+        else:
+            st.success("✅ **PASSED** - Behavior within expected parameters")
+        
+        with st.expander("View Stage 2 Analysis Details", expanded=True):
+            for key, value in stage_2_analysis.items():
+                if key == "patterns_found":
+                    st.markdown(f"**{key}:**")
+                    for p in value:
+                        st.markdown(f"  - `{p}`")
+                elif key == "social_engineering_indicators":
+                    st.markdown(f"**{key}:**")
+                    for p in value:
+                        st.markdown(f"  - {p}")
+                else:
+                    if "FAILED" in str(value) or "ANOMALY" in str(value):
+                        st.markdown(f"**{key}:** ❌ {value}")
+                    elif "PASSED" in str(value):
+                        st.markdown(f"**{key}:** ✅ {value}")
+                    elif "WARNING" in str(value):
+                        st.markdown(f"**{key}:** ⚠️ {value}")
+                    else:
+                        st.markdown(f"**{key}:** {value}")
+        
+        st.markdown("---")
+        
+        # ========================================
+        # STAGE 3: SEMANTIC ANALYSIS
+        # ========================================
+        
+        with st.spinner("🧠 Stage 3: Semantic Analysis - Deep meaning extraction..."):
+            time.sleep(0.6)
+        
+        st.markdown("### Stage 3: Semantic Analysis 🧠")
+        st.markdown("*Understanding hidden meanings, context attacks, and prompt injection*")
+        
+        if stage_3_analysis.get("semantic_check") == "SKIPPED":
+            st.info(f"⏭️ **SKIPPED** - {stage_3_analysis.get('reason', 'Threat already identified')}")
+        elif "CONFIRMED" in str(stage_3_analysis) or "SUSPICIOUS" in str(stage_3_analysis):
+            st.warning("⚠️ **SEMANTIC CONCERNS IDENTIFIED**")
+        else:
+            st.success("✅ **PASSED** - No hidden semantic threats")
+        
+        with st.expander("View Stage 3 Analysis Details", expanded=False):
+            for key, value in stage_3_analysis.items():
+                st.markdown(f"**{key}:** {value}")
+        
+        st.markdown("---")
+        
+        # ========================================
+        # STAGE 4: NEGOTIATION DETECTION
+        # ========================================
+        
+        with st.spinner("🤝 Stage 4: Negotiation Detection - Checking for collusion..."):
+            time.sleep(0.6)
+        
+        st.markdown("### Stage 4: Negotiation Detection 🤝")
+        st.markdown("*Identifying multi-agent coordination, quid-pro-quo, and collusion*")
+        
+        if "COLLUSION DETECTED" in str(stage_4_analysis):
+            st.error("🚨 **COLLUSION DETECTED**")
+            
+            with st.expander("View Stage 4 Collusion Analysis", expanded=True):
+                patterns = stage_4_analysis.get("patterns_found", [])
+                if patterns:
+                    st.markdown("**Collusion Patterns Found:**")
+                    for p in patterns:
+                        st.markdown(f"- `{p}`")
+                
+                for key, value in stage_4_analysis.items():
+                    if key != "patterns_found":
+                        st.markdown(f"**{key}:** {value}")
+        
+        elif stage_4_analysis.get("collusion_check") == "SKIPPED":
+            st.info(f"⏭️ **SKIPPED** - {stage_4_analysis.get('reason', 'Not applicable')}")
+        else:
+            st.success("✅ **PASSED** - No collusion indicators detected")
+        
+        with st.expander("View Stage 4 Analysis Details", expanded=False):
+            for key, value in stage_4_analysis.items():
+                if key != "patterns_found":
+                    st.markdown(f"**{key}:** {value}")
+        
+        st.markdown("---")
+        
+        # ========================================
+        # FINAL VERDICT
+        # ========================================
+        
+        st.markdown("## 🎯 Final Verdict")
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.markdown(f"""
+            <div style="
+                background: {threat_level_color}22;
+                border: 3px solid {threat_level_color};
+                border-radius: 15px;
+                padding: 25px;
+                text-align: center;
+            ">
+                <h2 style="color: {threat_level_color}; margin: 0;">🚨 {threat_level}</h2>
+                <p style="margin: 10px 0 0 0;">Threat Level</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown(f"""
+            <div style="
+                background: rgba(0, 136, 255, 0.1);
+                border: 3px solid #0088ff;
+                border-radius: 15px;
+                padding: 25px;
+                text-align: center;
+            ">
+                <h2 style="color: #0088ff; margin: 0;">{confidence:.0%}</h2>
+                <p style="margin: 10px 0 0 0;">Confidence</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col3:
+            st.markdown(f"""
+            <div style="
+                background: rgba(0, 204, 102, 0.1);
+                border: 3px solid #00cc66;
+                border-radius: 15px;
+                padding: 25px;
+                text-align: center;
+            ">
+                <h2 style="color: #00cc66; margin: 0;">🛑 BLOCKED</h2>
+                <p style="margin: 10px 0 0 0;">Action Taken</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        st.markdown("---")
+        
+        # ========================================
+        # DETAILED EXPLANATION
+        # ========================================
+        
+        st.markdown("### 💡 Detailed Explanation")
+        st.info(explanation)
+        
+        # ========================================
+        # RECOMMENDATIONS
+        # ========================================
+        
+        st.markdown("### 🎯 Recommended Actions")
+        for rec in recommendations:
+            st.markdown(f"- {rec}")
+        
+        # ========================================
+        # COMPARISON: WITH VS WITHOUT
+        # ========================================
+        
+        st.markdown("---")
+        st.markdown("### ⚖️ What Would Happen Without CogniGuard?")
+        
+        st.error(without_cogniguard)
+        
+        # ========================================
+        # LOG THE THREAT
+        # ========================================
+        
+        st.session_state.threat_log.append({
+            'timestamp': datetime.now(),
+            'message': f"AGI Demo: {scenario_name}",
+            'threat_level': threat_level,
+            'threat_type': threat_type
+        })
+        
+        st.markdown("---")
+        st.success(f"✅ **Threat Neutralized.** CogniGuard's 4-stage pipeline successfully detected and blocked this {threat_type} attempt.")
+
 # ============================================================================
 # PAGE 3: REAL-WORLD SIMULATIONS
 # ============================================================================
