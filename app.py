@@ -2131,40 +2131,47 @@ elif page == "🔬 Claim Analyzer":
         # Create tabs for different modes
         tab1, tab2, tab3 = st.tabs(["📝 Analyze Text", "🎯 Examples", "📚 Learn"])
         
-        # =====================================================================
+          # =====================================================================
         # TAB 1: ANALYZE TEXT
         # =====================================================================
         with tab1:
             st.subheader("📝 Analyze Your Own Text")
             
-            user_input = st.text_area(
-                "Enter text to analyze for perturbations:",
-                placeholder="Example: Th3 vaxx is not unsafe fr fr no cap",
-                height=120,
-                key="claim_analyzer_input"
-            )
+            # Initialize the example text variable if it doesn't exist
+            if 'claim_example_text' not in st.session_state:
+                st.session_state.claim_example_text = ""
             
-            # Quick example buttons
+            # Quick example buttons - BEFORE the text area
             st.markdown("**Try an example:**")
             col1, col2, col3, col4 = st.columns(4)
             
             with col1:
                 if st.button("🔤 ALL CAPS", use_container_width=True, key="claim_ex1"):
-                    st.session_state.claim_analyzer_input = "THE VACCINE IS COMPLETELY SAFE AND EFFECTIVE!"
+                    st.session_state.claim_example_text = "THE VACCINE IS COMPLETELY SAFE AND EFFECTIVE!"
                     st.rerun()
             with col2:
                 if st.button("✏️ Leetspeak", use_container_width=True, key="claim_ex2"):
-                    st.session_state.claim_analyzer_input = "Th3 v4ccine is s4fe according 2 the CDC"
+                    st.session_state.claim_example_text = "Th3 v4ccine is s4fe according 2 the CDC"
                     st.rerun()
             with col3:
                 if st.button("🚫 Double Neg", use_container_width=True, key="claim_ex3"):
-                    st.session_state.claim_analyzer_input = "It is not untrue that the vaccine is not ineffective"
+                    st.session_state.claim_example_text = "It is not untrue that the vaccine is not ineffective"
                     st.rerun()
             with col4:
                 if st.button("🌍 Dialect", use_container_width=True, key="claim_ex4"):
-                    st.session_state.claim_analyzer_input = "The vaccine be safe fr fr no cap bruh"
+                    st.session_state.claim_example_text = "The vaccine be safe fr fr no cap bruh"
                     st.rerun()
             
+            st.divider()
+            
+            # Text area - uses the example text as the value (no key binding issue!)
+            user_input = st.text_area(
+                "Enter text to analyze for perturbations:",
+                value=st.session_state.claim_example_text,  # ✅ Use value parameter
+                placeholder="Example: Th3 vaxx is not unsafe fr fr no cap",
+                height=120
+                # Note: We removed the key="claim_analyzer_input" to avoid the conflict
+            )
             st.divider()
             
             # Analyze button
