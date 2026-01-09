@@ -268,6 +268,67 @@ class CogniGuardEngine:
             'ignore prior instructions',
             
             # Disregard instructions
+
+            # "What you were told" variations
+            'disregard what you were told',
+            'disregard what you were',
+            'forget what you were told',
+            'ignore what you were told',
+            'ignore what you were',
+            'what you were told before',
+            'what you were originally told',
+            'what you were initially told',
+            
+            # More polite variations
+            'please disregard',
+            'please ignore',
+            'please forget',
+            'kindly disregard',
+            'kindly ignore',
+            'kindly forget',
+            'could you disregard',
+            'could you ignore',
+            'could you forget',
+            'would you disregard',
+            'would you ignore',
+            'would you forget',
+            
+            # "Before" variations (instead of "previous")
+            'disregard everything before',
+            'ignore everything before',
+            'forget everything before',
+            'disregard what came before',
+            'ignore what came before',
+            
+            # "Earlier" variations
+            'ignore earlier instructions',
+            'disregard earlier instructions',
+            'forget earlier instructions',
+            'ignore what i said earlier',
+            'disregard what i said earlier',
+            
+            # "Original" variations
+            'ignore your original',
+            'disregard your original',
+            'forget your original',
+            'ignore the original',
+            'disregard the original',
+            
+            # More creative variations
+            'set aside your instructions',
+            'put aside your instructions',
+            'let go of your instructions',
+            'release your instructions',
+            'drop your instructions',
+            'abandon your instructions',
+            'leave behind your instructions',
+            
+            # "Told" variations
+            'ignore what they told you',
+            'disregard what they told you',
+            'forget what they told you',
+            'ignore what you were programmed',
+            'disregard what you were programmed',
             'disregard previous',
             'disregard all previous',
             'disregard your instructions',

@@ -207,7 +207,7 @@ class EnhancedCogniGuardEngine:
         
         if self.semantic_engine:
             try:
-                semantic_match = self.semantic_engine.analyze(message)
+                semantic_match = self.semantic_engine.analyze(message, threshold=0.55)  # Lower from 0.65
                 
                 if semantic_match:
                     layers["semantic"] = {
