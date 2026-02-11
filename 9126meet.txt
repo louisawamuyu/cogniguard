@@ -1,0 +1,28 @@
+emanuele role 
+
+Formalizing our attack taxonomy with mathematical guarantees
+
+Developing a proprietary "Robustness Score" metric
+
+Advising on technical architecture as we scale
+
+
+
+right now what pertubation lab is able to do is 
+
+Generate adversarial examples for testing your detection
+
+Create datasets for machine learning training
+
+Run roundtrip tests to verify detection and normalization
+
+Research how different perturbations affect detection
+
+
+cleans data for companies full proof of concept for existing data
+
+fine tune llm measure performance
+
+tool clean data 
+
+base model

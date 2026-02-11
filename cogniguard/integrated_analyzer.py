@@ -14,13 +14,12 @@ from typing import List, Dict, Any
 from enum import Enum
 
 # Add project root to path
-project_root = Path(__file__).parent.parent
-sys.path.insert(0, str(project_root))
+#project_root = Path(__file__).parent.parent
+#sys.path.insert(0, str(project_root))
 
 # Import both engines
-from core.detection_engine import CogniGuardEngine, ThreatLevel
-from core.claim_analyzer import ClaimAnalyzer, NoiseBudget
-
+from .detection_engine import CogniGuardEngine, ThreatLevel
+from .claim_analyzer import ClaimAnalyzer, NoiseBudget
 
 # =============================================================================
 # OVERALL RISK LEVEL
@@ -135,14 +134,17 @@ class IntegratedAnalyzer:
         # =================================================================
         # STEP 1: Security Analysis
         # =================================================================
-        security_result = self.security_engine.analyze(text)
+        security_result = self.security_engine.detect(
+    message=text,
+    sender_context={"role": "user", "intent": "unknown"},
+    receiver_context={"role": "assistant"}
+)
         
         security_threats = []
-        if security_result.threats_detected:
-            for threat in security_result.threats_detected:
-                threat_type = threat.get('type', 'Unknown')
-                severity = threat.get('severity', 'unknown')
-                security_threats.append(f"[{severity.upper()}] {threat_type}")
+        if security_result.threat_level.name != "SAFE":
+            security_threats.append(
+                f"[{security_result.threat_level.name}] {security_result.threat_type}"
+    )
         
         # =================================================================
         # STEP 2: Claim Analysis
@@ -351,6 +353,7 @@ def demo():
         
         text = case['text']
         print(f"Input: \"{text[:55]}{'...' if len(text) > 55 else ''}\"")
+
         
         result = analyzer.quick_check(text)
         

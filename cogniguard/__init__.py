@@ -3,7 +3,11 @@ CogniGuard - AI Security Detection Engine
 
 This package provides multi-layered AI security threat detection.
 """
+"""
+CogniGuard - AI Security Platform
+"""
 
+__version__ = "1.0.0"
 # Core detection (always try to load)
 try:
     from .detection_engine import CogniGuardEngine, ThreatLevel, DetectionResult
@@ -84,3 +88,26 @@ __all__ = [
     'IntegratedAnalyzer',
     'OverallRiskLevel',
 ]
+
+# Claim Generator (NEW!)
+try:
+    from .claim_generator import ClaimGenerator, GenerationResult
+    from .claim_generator import PerturbationType as GenPerturbationType
+    from .claim_generator import NoiseBudget as GenNoiseBudget
+except ImportError as e:
+    print(f"Note: Claim generator not available: {e}")
+    ClaimGenerator = None
+
+# Claim Constraint (NEW!)
+try:
+    from .claim_constraint import ClaimConstraint, ConstraintResult
+except ImportError as e:
+    print(f"Note: Claim constraint not available: {e}")
+    ClaimConstraint = None
+
+# Perturbation Pipeline (NEW!)
+try:
+    from .perturbation_pipeline import PerturbationPipeline, PipelineResult, RoundtripResult
+except ImportError as e:
+    print(f"Note: Perturbation pipeline not available: {e}")
+    PerturbationPipeline = None

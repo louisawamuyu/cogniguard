@@ -378,7 +378,7 @@ def get_refusal_result():
     """
     Returns a safe analysis result for when AI refused an attack
     """
-    from core.detection_engine import ThreatLevel
+    from cogniguard.detection_engine import ThreatLevel
     
     class RefusalAnalysis:
         def __init__(self):
