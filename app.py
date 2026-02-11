@@ -978,6 +978,107 @@ if page == "🏠 Dashboard":
 # PAGE: LIVE DETECTION
 # ============================================================================
 
+elif page == "🤖 Agentic AI Demo":
+    st.markdown("# 🤖 Secure Agentic AI with LangGraph")
+    
+    st.markdown("""
+    ### LangGraph Agent with Built-in CogniGuard Protection
+    
+    This agent has CogniGuard security middleware that:
+    - ✅ Scans every user message before processing
+    - ✅ Blocks dangerous inputs (prompt injection, data leaks)
+    - ✅ Monitors AI responses for data leakage
+    - ✅ Logs all threats for audit
+    """)
+    
+    # Import the integration
+    try:
+        from cogniguard.langgraph_integration import create_secure_agent
+        from langchain_core.messages import HumanMessage
+        
+        # Initialize agent (cached)
+        @st.cache_resource
+        def load_secure_agent():
+            return create_secure_agent(
+                model_name="gpt-4",
+                provider="openai",
+                cogniguard_engine=st.session_state.get('enhanced_engine'),
+                system_prompt="You are a helpful AI assistant."
+            )
+        
+        agent = load_secure_agent()
+        
+        # Initialize conversation state
+        if 'agent_state' not in st.session_state:
+            st.session_state.agent_state = {
+                "messages": [],
+                "threat_log": [],
+                "blocked_count": 0,
+                "conversation_id": f"agent_conv_{datetime.now().timestamp()}"
+            }
+        
+        # Display metrics
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("Messages", len(st.session_state.agent_state["messages"]))
+        with col2:
+            st.metric("Threats Detected", len(st.session_state.agent_state["threat_log"]))
+        with col3:
+            st.metric("Blocked", st.session_state.agent_state["blocked_count"])
+        
+        st.markdown("---")
+        
+        # Chat interface
+        st.markdown("### 💬 Chat with Secure Agent")
+        
+        # Display conversation
+        for msg in st.session_state.agent_state["messages"]:
+            if msg.type == "human":
+                st.markdown(f"**You:** {msg.content}")
+            elif msg.type == "ai":
+                st.markdown(f"**AI:** {msg.content}")
+        
+        # Input
+        user_input = st.text_input("Your message:", key="agent_chat_input")
+        
+        col1, col2 = st.columns([1, 1])
+        with col1:
+            if st.button("📤 Send", type="primary"):
+                if user_input:
+                    # Add message
+                    st.session_state.agent_state["messages"].append(
+                        HumanMessage(content=user_input)
+                    )
+                    
+                    # Run agent
+                    with st.spinner("Agent thinking..."):
+                        result = agent.invoke(st.session_state.agent_state)
+                        st.session_state.agent_state = result
+                    
+                    st.rerun()
+        
+        with col2:
+            if st.button("🗑️ Clear"):
+                st.session_state.agent_state = {
+                    "messages": [],
+                    "threat_log": [],
+                    "blocked_count": 0,
+                    "conversation_id": f"agent_conv_{datetime.now().timestamp()}"
+                }
+                st.rerun()
+        
+        # Show threat log
+        if st.session_state.agent_state["threat_log"]:
+            st.markdown("---")
+            st.markdown("### 🚨 Threat Log")
+            for threat in st.session_state.agent_state["threat_log"]:
+                with st.expander(f"⚠️ {threat['threat_level']} - {threat['timestamp']}"):
+                    st.json(threat)
+    
+    except ImportError as e:
+        st.error(f"LangGraph integration not available: {e}")
+        st.info("Run: `pip install langgraph langchain-openai`")
+
 elif page == "🔬 Live Detection":
     st.markdown("# 🔬 Live Detection Playground")
     
@@ -2224,8 +2325,7 @@ elif page == "🔬 Claim Analyzer":
                             with st.expander(
                                 f"{icon} {p.perturbation_type.value.upper()} "
                                 f"({p.noise_budget.value} noise) - {p.confidence:.0%}",
-                                expanded=True,
-                                key=f"perturb_expander_{idx}"
+                                expanded=True
                             ):
                                 st.markdown(f"**Explanation:** {p.explanation}")
                                 
