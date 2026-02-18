@@ -1,3 +1,58 @@
+# ============================================
+# SECRETS & CREDENTIALS - NEVER PUSH THESE!
+# ============================================
 .streamlit/secrets.toml
+secrets.toml
+Supabase_Credentials.txt
+Supabase_URL.txt
+neon_database_api_key/
+resend_api_key/
+openai_key.txt
 pypicodes.txt
 pypirc/
+*.env
+.env
+.env.*
+
+# Credential patterns
+*_api_key*
+*_secret*
+*credentials*
+
+# ============================================
+# Python
+# ============================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# ============================================
+# OS Files
+# ============================================
+.DS_Store
+Thumbs.db
+~$*
+*.tmp
+~WRL*.tmp
+
+# ============================================
+# IDE
+# ============================================
+.vscode/
+.idea/
+*.swp
+
+# ============================================
+# Logs & Temp
+# ============================================
+*.log
+test_threats.json
+cogniguard.db

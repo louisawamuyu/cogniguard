@@ -1,2 +1,0 @@
-Supabase Database Url = https://qzpocvuonzrkpofmpugd.supabase.co
-Supabase API Key = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF6cG9jdnVvbnpya3BvZm1wdWdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwMDg0MTIsImV4cCI6MjA3OTU4NDQxMn0.MvzjIyeP9ujxnmiB1zK-Xkya3-lZCQ43CnRpX26fQcw
