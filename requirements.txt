@@ -11,7 +11,6 @@ certifi==2025.6.15
 cffi==2.0.0
 charset-normalizer==3.4.2
 click==8.2.1
--e git+https://github.com/louisawamuyu/cogniguard.git@e1e0067e664f8052178ba00cf13b71b6d2d6bfcc#egg=cogniguard
 colorama==0.4.6
 cryptography==46.0.3
 dash==3.0.4

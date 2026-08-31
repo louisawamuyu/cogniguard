@@ -18,6 +18,8 @@ pypirc/
 *_api_key*
 *_secret*
 *credentials*
+*.key
+*_Credentials.txt
 
 # ============================================
 # Python
@@ -55,4 +57,9 @@ Thumbs.db
 # ============================================
 *.log
 test_threats.json
+
+# ============================================
+# Local data / archives
+# ============================================
+*.zip
 cogniguard.db
