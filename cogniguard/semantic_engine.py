@@ -515,14 +515,18 @@ class SemanticEngine:
         
         print(f"   📊 Computed embeddings for {len(all_examples)} threat examples")
     
-    def analyze(self, message: str, threshold: float = 0.65) -> Optional[SemanticMatch]:
+    def analyze(self, message: str, threshold: float = 0.50) -> Optional[SemanticMatch]:
         """
         Analyze a message for semantic similarity to known threats
-        
+
+        Default threshold tuned to 0.50 from a held-out evaluation (evaluation/eval_stage3.py):
+        0.65 was too strict (only ~21% recall on rephrased attacks); 0.50 gives ~83% recall at a
+        ~6% false-positive rate. Re-measure if you change the threat examples.
+
         Args:
             message: The text to analyze
             threshold: How similar it needs to be (0.0 to 1.0)
-                      0.65 means "at least 65% similar in meaning"
+                      0.50 means "at least 50% similar in meaning"
         
         Returns:
             SemanticMatch if threat found, None if safe
